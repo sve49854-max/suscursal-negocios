@@ -419,6 +419,15 @@ a {
   filter: brightness(0.92);
 }
 
+.btn--warning {
+  background: #ffc107;
+  color: #000;
+}
+
+.btn--warning:hover {
+  filter: brightness(0.92);
+}
+
 .footer-note {
   color: #cfcfcf;
   font-size: 0.8rem;
