@@ -1,0 +1,12 @@
+{
+  "name": "sucursal-negocios",
+  "version": "1.0.0",
+  "description": "Bancolombia Sucursal Virtual Negocios & Panel de Operador",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
