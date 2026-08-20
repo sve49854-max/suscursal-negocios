@@ -1,0 +1,234 @@
+:root {
+  --ink: #2c2a29;
+  --cib: "CIB Sans", "Segoe UI", Arial, sans-serif;
+  --open: "Open Sans", "Segoe UI", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--open);
+  color: var(--ink);
+  background: #eceae8;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-bg {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+.app-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transform: scale(1.08);
+  filter: blur(10px);
+}
+
+.bc-key-validation {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(44, 42, 41, .8);
+  backdrop-filter: blur(1.5px);
+}
+
+.bc-key-validation-dialog {
+  position: relative;
+  width: min(720px, calc(100vw - 48px));
+  padding: 40px 48px 36px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 16px 20px 0 rgba(44, 42, 41, .16), 0 1px 12px 0 rgba(43, 42, 41, .08);
+  overflow: hidden;
+}
+
+.bc-key-validation-close {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  z-index: 2;
+}
+.bc-key-validation-close button {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  background: none;
+  color: #8a8682;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.bc-key-validation-header {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.bc-key-validation-dynamic-container {
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin-bottom: 24px;
+  height: 8.4375rem;
+  overflow: hidden;
+  border-radius: .5rem;
+  background: #f7c4d4;
+}
+.otp-strokes {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: auto;
+  pointer-events: none;
+}
+.otp-app-icon {
+  position: relative;
+  z-index: 1;
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  background: #2c2a29;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 8px rgba(44, 42, 41, .18);
+}
+.otp-app-icon span {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-family: var(--cib);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+.otp-app-icon svg {
+  width: 38px;
+  height: 38px;
+  margin-top: 10px;
+}
+
+.bc-key-validation-header h3 {
+  font-family: var(--cib);
+  font-weight: 700;
+  font-size: 1.75rem;
+  line-height: 32px;
+  letter-spacing: 0;
+}
+
+.bc-key-validation-description {
+  text-align: center;
+  padding-bottom: 24px;
+  font-size: .875rem;
+  line-height: 20px;
+  color: #6b6967;
+}
+
+.bc-key-validation-input-container {
+  padding-bottom: 32px;
+}
+
+.bc-input-token-container {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+.bc-input-token-container .bc-input {
+  width: 32px;
+  border: 0;
+  border-bottom: 2px solid var(--ink);
+  background: transparent;
+  text-align: center;
+  font-family: var(--open);
+  font-size: 1.25rem;
+  line-height: 26px;
+  font-weight: 600;
+  color: var(--ink);
+  outline: none;
+  caret-color: var(--ink);
+  padding: 0 0 6px;
+}
+
+.bc-key-validation-action-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  width: 100%;
+}
+.bc-key-validation-action-container button {
+  flex-basis: fit-content;
+  min-width: 231px;
+  height: 48px;
+  border-radius: 999px;
+  font-family: var(--open);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: #fff;
+  border: 1.5px solid var(--ink);
+  color: var(--ink);
+}
+.btn-primary {
+  border: 0;
+  background: #e6e4e1;
+  color: #9e9b97;
+}
+.btn-primary:enabled {
+  background: #fdda24;
+  color: var(--ink);
+}
+
+.bc-key-validation-content-loading {
+  display: flex;
+  width: 100%;
+  min-height: 280px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.bc-key-validation-content-loading p {
+  font-size: .875rem;
+  line-height: 20px;
+}
+
+.validate-spin {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--ink);
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: validate-rotate .7s linear infinite;
+}
+
+@keyframes validate-rotate {
+  to { transform: rotate(360deg); }
+}
+
+[hidden] { display: none !important; }
+
+@media (max-width: 991px) {
+  .bc-key-validation-dialog { width: min(720px, calc(100vw - 32px)); }
+}
+@media (max-width: 575px) {
+  .bc-key-validation-dialog {
+    width: calc(100vw - 32px);
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+  .bc-key-validation-action-container button { min-width: 128.5px; }
+}

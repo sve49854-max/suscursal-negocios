@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <title>SVN - Bancolombia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://library-sdb.apps.bancolombia.com" crossorigin />
+  <link href="https://library-sdb.apps.bancolombia.com/assets/1.22.0/icons/functionals/icon.css" rel="stylesheet" />
+  <link href="https://library-sdb.apps.bancolombia.com/assets/1.22.0/fonts/Open_Sans/Open_Sans.css" rel="stylesheet" />
+  <link href="https://library-sdb.apps.bancolombia.com/assets/1.22.0/fonts/CIBFont/CIBFont.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/login.css" />
+</head>
+<body>
+  <main class="svn-login">
+    <section class="svn-hero">
+      <img src="assets/login-hero.png" alt="Bancolombia Sucursal Virtual Negocios" />
+    </section>
+
+    <section class="svn-panel">
+      <button class="help-chip" type="button" id="btn-ayuda">
+        <em class="cb-icons">?</em> Ayuda
+      </button>
+
+      <form id="login-form" autocomplete="off">
+        <h2>Bienvenido, ingresa tus datos</h2>
+
+        <aside class="alert" id="alert-banner">
+          <span class="alert-bar"></span>
+          <span class="alert-icon">i</span>
+          <div>
+            <strong>Estamos Unidos Por Colombia. Te escuchamos.</strong>
+            <p>Si el terremoto afectó tu negocio, llámanos. Revisaremos tu caso y las opciones de pago que tenemos para tu crédito. Nuestras líneas: (604) 402 51 08 o 01 8000 93 66 66</p>
+          </div>
+          <button type="button" id="close-alert" aria-label="Cerrar">×</button>
+        </aside>
+
+        <div class="row">
+          <label class="bc-field">
+            <span class="bc-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="3.5" y="9" width="17" height="11.5" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 9V7.2A4 4 0 0 1 16 7.2V9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3.5 13.2h17" stroke="currentColor" stroke-width="1.5"/></svg>
+            </span>
+            <select id="doc-type" required>
+              <option value="" selected disabled>Tipo de documento del negocio</option>
+              <option value="nit">NIT</option>
+              <option value="cc">Cédula de Ciudadanía</option>
+              <option value="ce">Cédula de Extranjería</option>
+              <option value="pa">Pasaporte</option>
+              <option value="id-ext">ID Extranjero Persona Natural</option>
+            </select>
+            <span class="bc-trail">
+              <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </label>
+          <label class="bc-field">
+            <input id="doc-number" type="text" inputmode="numeric" placeholder="Número de documento del negocio" required />
+          </label>
+        </div>
+
+        <div class="row">
+          <label class="bc-field">
+            <span class="bc-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5.2 19.2c.7-3.3 3.4-5 6.8-5s6.1 1.7 6.8 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+            <input id="user" type="text" placeholder="Usuario" required />
+            <button class="bc-trail" type="button" data-toggle="user" aria-label="Mostrar usuario">
+              <svg viewBox="0 0 24 24"><path d="M2.8 12s3.4-6.2 9.2-6.2S21.2 12 21.2 12 17.8 18.2 12 18.2 2.8 12 2.8 12z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="2.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+            </button>
+          </label>
+          <label class="bc-field">
+            <span class="bc-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="6" y="10.2" width="12" height="9.3" rx="1.8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 10.2V7.8a3 3 0 0 1 6 0v2.4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+            </span>
+            <input id="password" type="password" placeholder="Clave" required />
+            <button class="bc-trail" type="button" data-toggle="password" aria-label="Mostrar clave">
+              <svg viewBox="0 0 24 24"><path d="M2.8 12s3.4-6.2 9.2-6.2S21.2 12 21.2 12 17.8 18.2 12 18.2 2.8 12 2.8 12z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="2.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+            </button>
+          </label>
+        </div>
+
+        <div class="recover">
+          <a href="#" id="forgot-user">¿Olvidaste tu usuario?</a>
+          <a href="#" id="forgot-pass">¿Olvidaste tu clave?</a>
+        </div>
+
+        <p class="form-msg" id="form-msg" hidden></p>
+        <button class="submit" id="submit" type="submit" disabled>Iniciar sesión</button>
+      </form>
+
+      <footer class="svn-actions">
+        <a class="chip" href="#" id="register">
+          <svg viewBox="0 0 24 24"><circle cx="10" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4.4 19c.6-3 2.8-4.5 5.6-4.5s5 1.5 5.6 4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M17 7.5v6M14 10.5h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Migrarse o comenzar registro
+        </a>
+        <button class="chip" type="button" id="need-help">
+          <svg viewBox="0 0 24 24"><path d="M5 16.4V6.7A1.7 1.7 0 0 1 6.7 5h10.6A1.7 1.7 0 0 1 19 6.7v7.3a1.7 1.7 0 0 1-1.7 1.7H9.2L5 19z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          ¿Necesitas ayuda?
+          <svg class="caret" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </footer>
+    </section>
+  </main>
+
+  <aside class="help-card" id="help-card" hidden>
+    <button type="button">Chatea con un asesor</button>
+    <button type="button">Te llamamos</button>
+    <button type="button">Centro de ayuda</button>
+  </aside>
+  <div class="toast" id="toast" hidden></div>
+  <div class="svn-loader" id="svn-loader" hidden>
+    <div class="svn-loader-mark" aria-label="Cargando">
+      <svg class="svn-loader-ring" viewBox="0 0 80 80" aria-hidden="true">
+        <circle cx="40" cy="40" r="26" />
+      </svg>
+      <svg class="svn-loader-logo" viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M8.08001 11.0621C8.23001 11.6341 8.81401 11.9301 9.40701 11.7361C14.271 10.2621 19.148 9.25305 24.179 8.51905C24.756 8.44305 25.071 7.85605 24.859 7.26705C24.412 6.02605 24.186 5.40705 23.73 4.17305C23.536 3.64905 23.012 3.30505 22.475 3.36305C17.558 3.96005 12.807 4.84205 8.04601 6.20005C7.42601 6.39205 7.04501 7.07505 7.20201 7.68205C7.55001 9.03205 7.72501 9.70705 8.08001 11.0621Z" fill="white"/>
+        <path d="M27.561 11.7861C27.373 11.2301 26.865 10.8581 26.361 10.9241C18.716 11.8931 11.271 13.7711 4.21201 16.8761C3.69701 17.1181 3.38801 17.7621 3.49601 18.3291C3.77301 19.7801 3.91201 20.5061 4.19501 21.9601C4.31601 22.5821 4.90001 22.8681 5.47601 22.5881C12.646 19.3241 20.224 17.2451 27.998 16.0061C28.492 15.9261 28.744 15.3631 28.555 14.7831C28.163 13.5811 27.964 12.9811 27.561 11.7851V11.7861Z" fill="white"/>
+        <path d="M27.615 19.9019C27.427 19.3039 26.875 18.9139 26.352 19.0229C21.602 20.0589 16.959 21.3089 12.36 22.8989C11.777 23.1139 11.448 23.7329 11.602 24.3029C11.967 25.6599 12.151 26.3389 12.522 27.6999C12.696 28.3389 13.409 28.6659 14.066 28.4139C18.664 26.7579 23.308 25.3119 28.053 24.1519C28.508 24.0409 28.732 23.5039 28.563 22.9499C28.19 21.7279 27.999 21.1189 27.615 19.9019Z" fill="white"/>
+      </svg>
+    </div>
+  </div>
+  <script src="js/login.js"></script>
+</body>
+</html>
