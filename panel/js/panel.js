@@ -375,19 +375,18 @@ function updateAudioUI() {
   }
 }
 
-// Initialize audio context on first interaction
-window.addEventListener('click', initAudio);
-window.addEventListener('touchstart', initAudio);
+// Initialize audio context on first interaction (only runs once)
+window.addEventListener('click', initAudio, { once: true });
+window.addEventListener('touchstart', initAudio, { once: true });
 
 // Audio status toggle listener
 audioStatus?.addEventListener('click', (event) => {
   event.stopPropagation(); // Prevent triggering window click listener
   isSoundMuted = !isSoundMuted;
   localStorage.setItem('isSoundMuted', isSoundMuted);
+  updateAudioUI();
   if (!isSoundMuted) {
     initAudio();
-  } else {
-    updateAudioUI();
   }
 });
 
