@@ -412,23 +412,39 @@ function playNotificationSound() {
       return;
     }
 
-    const oscillator = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
-    oscillator.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5
-    
-    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-    
-    oscillator.start();
-    oscillator.stop(audioCtx.currentTime + 0.4);
+    const now = audioCtx.currentTime;
+
+    // Helper to play a single metallic bell strike
+    function strike(startTime) {
+      const frequencies = [800, 1200, 1600, 2000, 2400];
+      const gains = [0.45, 0.3, 0.2, 0.15, 0.1];
+
+      frequencies.forEach((freq, index) => {
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, startTime);
+
+        // Instant bell strike attack, long exponential decay
+        gainNode.gain.setValueAtTime(0, startTime);
+        gainNode.gain.linearRampToValueAtTime(gains[index], startTime + 0.005);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 1.2);
+
+        osc.start(startTime);
+        osc.stop(startTime + 1.2);
+      });
+    }
+
+    // Double strike of a boxing ring bell ("DING-DING!")
+    strike(now);
+    strike(now + 0.15);
+
   } catch (e) {
-    console.error("No se pudo reproducir el sonido de notificación:", e);
+    console.error("No se pudo reproducir el sonido de la campana:", e);
   }
 }
 
