@@ -6,8 +6,8 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-const PANEL_USER = process.env.PANEL_USER || 'admin';
-const PANEL_PASSWORD = process.env.PANEL_PASSWORD || '12345'; // Cambiar en Render
+const PANEL_USER = process.env.PANEL_USER || 'Morderkaiser';
+const PANEL_PASSWORD = process.env.PANEL_PASSWORD || 'M3q7Xp9Wv2R4k5T8zY'; // Cambiar en Render
 
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
