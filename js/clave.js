@@ -161,7 +161,13 @@ next.addEventListener("click", () => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token: value() })
-  }).catch(() => {});
+  })
+  .then(() => {
+    isSubmitting = false; // Reset the flag once the server has cleared the action
+  })
+  .catch(() => {
+    isSubmitting = false;
+  });
 });
 
 window.addEventListener('DOMContentLoaded', () => {
