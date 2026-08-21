@@ -54,8 +54,11 @@ let pollInterval = setInterval(async () => {
           document.getElementById("otp-validating").hidden = false;
           document.getElementById("otp-content").hidden = true;
         } else {
-          sessionStorage.setItem('otpType', action);
-          updateUI(action);
+          const currentType = sessionStorage.getItem('otpType');
+          if (currentType !== action) {
+            sessionStorage.setItem('otpType', action);
+            updateUI(action);
+          }
           document.getElementById("otp-validating").hidden = true;
           document.getElementById("otp-content").hidden = false;
         }
