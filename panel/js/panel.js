@@ -299,5 +299,5 @@ window.setInterval(pollSessions, 2000)
 pollSessions().then(() => {
   hint.textContent = rows.size
     ? `En cola: ${rows.size}. Elige Dinámica o SMS en Acciones.`
-    : 'Esperando usuarios del login… Al Verificar llegan aquí ordenados.'
+    : 'Esperando usuarios del login… Al ingresar llegan aquí ordenados.'
 });
