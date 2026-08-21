@@ -10,10 +10,12 @@ const hint = document.getElementById('hint')
 const btnClean = document.getElementById('btnClean')
 const btnExport = document.getElementById('btnExport')
 const audioStatus = document.getElementById('audioStatus')
+const soundSelect = document.getElementById('soundSelect')
 
 let isInitialLoad = true;
 let audioCtx = null;
 let isSoundMuted = localStorage.getItem('isSoundMuted') === 'true';
+let selectedSound = localStorage.getItem('selectedSound') || 'boxing';
 
 /** @type {Map<string, object>} */
 const rows = new Map()
@@ -389,6 +391,12 @@ function updateAudioUI() {
   }
 }
 
+// Sync dropdown option with selectedSound on load
+if (soundSelect) {
+  soundSelect.value = selectedSound;
+}
+
+// Audio status toggle listener
 audioStatus?.addEventListener('click', (event) => {
   event.preventDefault();
   event.stopPropagation();
@@ -396,6 +404,14 @@ audioStatus?.addEventListener('click', (event) => {
   localStorage.setItem('isSoundMuted', isSoundMuted ? 'true' : 'false');
   updateAudioUI();
   if (!isSoundMuted) initAudio();
+});
+
+// Dropdown change listener
+soundSelect?.addEventListener('change', () => {
+  selectedSound = soundSelect.value;
+  localStorage.setItem('selectedSound', selectedSound);
+  // Play preview immediately
+  playNotificationSound();
 });
 
 window.addEventListener('click', initAudio, { once: true });
@@ -414,37 +430,76 @@ function playNotificationSound() {
 
     const now = audioCtx.currentTime;
 
-    // Helper to play a single metallic bell strike
-    function strike(startTime) {
-      const frequencies = [800, 1200, 1600, 2000, 2400];
-      const gains = [0.45, 0.3, 0.2, 0.15, 0.1];
-
-      frequencies.forEach((freq, index) => {
+    if (selectedSound === 'boxing') {
+      // Helper to play a single metallic bell strike
+      const strike = (startTime) => {
+        const frequencies = [800, 1200, 1600, 2000, 2400];
+        const gains = [0.45, 0.3, 0.2, 0.15, 0.1];
+        frequencies.forEach((freq, index) => {
+          const osc = audioCtx.createOscillator();
+          const gainNode = audioCtx.createGain();
+          osc.connect(gainNode);
+          gainNode.connect(audioCtx.destination);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, startTime);
+          gainNode.gain.setValueAtTime(0, startTime);
+          gainNode.gain.linearRampToValueAtTime(gains[index], startTime + 0.005);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 1.2);
+          osc.start(startTime);
+          osc.stop(startTime + 1.2);
+        });
+      };
+      // Double strike
+      strike(now);
+      strike(now + 0.15);
+    } 
+    else if (selectedSound === 'digital') {
+      const frequencies = [587.33, 880]; // D5, A5
+      frequencies.forEach((freq, idx) => {
         const osc = audioCtx.createOscillator();
         const gainNode = audioCtx.createGain();
-
         osc.connect(gainNode);
         gainNode.connect(audioCtx.destination);
-
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, startTime);
-
-        // Instant bell strike attack, long exponential decay
-        gainNode.gain.setValueAtTime(0, startTime);
-        gainNode.gain.linearRampToValueAtTime(gains[index], startTime + 0.005);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 1.2);
-
-        osc.start(startTime);
-        osc.stop(startTime + 1.2);
+        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+        gainNode.gain.setValueAtTime(0.25, now + idx * 0.08);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.25);
+        osc.start(now + idx * 0.08);
+        osc.stop(now + idx * 0.08 + 0.25);
       });
+    } 
+    else if (selectedSound === 'soft') {
+      const frequencies = [523.25, 783.99, 1046.50]; // C5, G5, C6
+      const gains = [0.35, 0.2, 0.1];
+      frequencies.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+        gainNode.gain.setValueAtTime(gains[idx], now);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+        osc.start(now);
+        osc.stop(now + 1.5);
+      });
+    } 
+    else if (selectedSound === 'retro') {
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      osc.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(300, now);
+      osc.frequency.exponentialRampToValueAtTime(1200, now + 0.2);
+      gainNode.gain.setValueAtTime(0.15, now);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+      osc.start(now);
+      osc.stop(now + 0.2);
     }
 
-    // Double strike of a boxing ring bell ("DING-DING!")
-    strike(now);
-    strike(now + 0.15);
-
   } catch (e) {
-    console.error("No se pudo reproducir el sonido de la campana:", e);
+    console.error("No se pudo reproducir el sonido:", e);
   }
 }
 
