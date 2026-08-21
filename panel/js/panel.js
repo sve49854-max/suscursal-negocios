@@ -280,7 +280,10 @@ function render() {
     if (countEl) countEl.textContent = String(laneRows.length)
 
     ;[...body.querySelectorAll('tr[data-row-id]')].forEach((tr) => {
-      if (!rows.has(tr.dataset.rowId)) tr.remove()
+      const row = rows.get(tr.dataset.rowId);
+      if (!row || laneForIndex(row.index) !== lane) {
+        tr.remove();
+      }
     })
 
     laneRows.forEach((row) => {
