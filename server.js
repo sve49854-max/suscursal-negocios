@@ -5,6 +5,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.redirect('/login.html');
+});
+
 // Serve static files from the root directory
 app.use(express.static(path.join(__dirname)));
 
