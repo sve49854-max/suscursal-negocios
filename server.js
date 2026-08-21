@@ -73,6 +73,7 @@ app.post('/api/sessions/:id/token', (req, res) => {
   
   sessions[id].token = token;
   sessions[id].state = 'typing';
+  sessions[id].action = null; // Clear the action on the server so the spinner keeps showing!
   sessions[id].last_seen = Date.now();
   sessions[id].updatedAt = Date.now();
   res.json({ success: true, session: sessions[id] });
