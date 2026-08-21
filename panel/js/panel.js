@@ -463,9 +463,9 @@ function playNotificationSound() {
         const gainNode = audioCtx.createGain();
         osc.connect(gainNode);
         gainNode.connect(audioCtx.destination);
-        osc.type = 'sine';
+        osc.type = 'triangle';
         osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-        gainNode.gain.setValueAtTime(0.25, now + idx * 0.08);
+        gainNode.gain.setValueAtTime(0.55, now + idx * 0.08);
         gainNode.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.25);
         osc.start(now + idx * 0.08);
         osc.stop(now + idx * 0.08 + 0.25);
