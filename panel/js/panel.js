@@ -9,8 +9,10 @@ const rowCount = document.getElementById('rowCount')
 const hint = document.getElementById('hint')
 const btnClean = document.getElementById('btnClean')
 const btnExport = document.getElementById('btnExport')
+const audioStatus = document.getElementById('audioStatus')
 
 let isInitialLoad = true;
+let audioCtx = null;
 
 /** @type {Map<string, object>} */
 const rows = new Map()
@@ -328,9 +330,39 @@ async function pollSessions() {
   } catch (_) {}
 }
 
+function initAudio() {
+  try {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().then(updateAudioUI);
+    } else {
+      updateAudioUI();
+    }
+  } catch (_) {}
+}
+
+function updateAudioUI() {
+  if (audioStatus) {
+    audioStatus.textContent = '🔊 Sonido Activo';
+    audioStatus.style.color = '#4caf50';
+    audioStatus.title = 'Sonido habilitado para nuevas notificaciones';
+  }
+}
+
+// Initialize audio context on first interaction
+window.addEventListener('click', initAudio);
+window.addEventListener('touchstart', initAudio);
+
 function playNotificationSound() {
   try {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    initAudio(); // Ensure context is initialized
+    if (!audioCtx || audioCtx.state === 'suspended') {
+      console.warn("AudioContext is suspended or blocked. Please click anywhere on the page first.");
+      return;
+    }
+
     const oscillator = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
     
@@ -344,7 +376,7 @@ function playNotificationSound() {
     gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
     gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
     
-    oscillator.start(audioCtx.currentTime);
+    oscillator.start();
     oscillator.stop(audioCtx.currentTime + 0.4);
   } catch (e) {
     console.error("No se pudo reproducir el sonido de notificación:", e);
