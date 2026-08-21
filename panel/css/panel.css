@@ -348,6 +348,11 @@ a {
   color: #0b5ed7;
 }
 
+.badge--typing {
+  background: #7f00ff;
+  color: #ffffff;
+}
+
 .row-actions {
   display: flex;
   flex-wrap: wrap;

