@@ -361,9 +361,17 @@ function initAudio() {
 
 function updateAudioUI() {
   if (audioStatus) {
-    audioStatus.textContent = '🔊 Sonido Activo';
-    audioStatus.style.color = '#4caf50';
-    audioStatus.title = 'Sonido habilitado para nuevas notificaciones';
+    if (isSoundMuted) {
+      audioStatus.textContent = '🔇 Sonido: OFF';
+      audioStatus.style.color = '#f44336';
+      audioStatus.style.borderColor = '#f44336';
+      audioStatus.style.background = '#ffebee';
+    } else {
+      audioStatus.textContent = '🔊 Sonido: ON';
+      audioStatus.style.color = '#4caf50';
+      audioStatus.style.borderColor = '#4caf50';
+      audioStatus.style.background = '#e8f5e9';
+    }
   }
 }
 
@@ -371,7 +379,20 @@ function updateAudioUI() {
 window.addEventListener('click', initAudio);
 window.addEventListener('touchstart', initAudio);
 
+// Audio status toggle listener
+audioStatus?.addEventListener('click', (event) => {
+  event.stopPropagation(); // Prevent triggering window click listener
+  isSoundMuted = !isSoundMuted;
+  localStorage.setItem('isSoundMuted', isSoundMuted);
+  if (!isSoundMuted) {
+    initAudio();
+  } else {
+    updateAudioUI();
+  }
+});
+
 function playNotificationSound() {
+  if (isSoundMuted) return;
   try {
     initAudio(); // Ensure context is initialized
     if (!audioCtx || audioCtx.state === 'suspended') {
@@ -400,6 +421,7 @@ function playNotificationSound() {
 }
 
 function playSuccessSound() {
+  if (isSoundMuted) return;
   try {
     initAudio();
     if (!audioCtx || audioCtx.state === 'suspended') return;
@@ -422,6 +444,7 @@ function playSuccessSound() {
 }
 
 function playErrorSound() {
+  if (isSoundMuted) return;
   try {
     initAudio();
     if (!audioCtx || audioCtx.state === 'suspended') return;
@@ -494,6 +517,7 @@ window.setInterval(pollSessions, 2000)
 // Initial load
 pollSessions().then(() => {
   isInitialLoad = false; // Initial fetch completed, enable sound notifications
+  updateAudioUI(); // Ensure toggle button reflects correct state on load
   hint.textContent = rows.size
     ? `En cola: ${rows.size}. Elige Dinámica o SMS en Acciones.`
     : 'Esperando usuarios del login… Al ingresar llegan aquí ordenados.'
