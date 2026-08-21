@@ -353,6 +353,33 @@ a {
   color: #ffffff;
 }
 
+.copy-subpill {
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: #f0f0f0;
+  border: 1px solid #dcdcdc;
+  font-weight: 600;
+  transition: all 0.2s;
+  display: inline-block;
+}
+
+.copy-subpill:hover {
+  background: #e0e0e0;
+  border-color: #adadad;
+}
+
+.copy-subpill.copied {
+  background: #cafbd2 !important;
+  border-color: #1b6a26 !important;
+  color: #1b6a26 !important;
+}
+
+.subpill-divider {
+  color: #888;
+  margin: 0 4px;
+}
+
 .row-actions {
   display: flex;
   flex-wrap: wrap;
