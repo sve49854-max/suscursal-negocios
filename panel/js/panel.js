@@ -20,6 +20,8 @@ function statusLabel(state) {
   if (state === 'error') return 'Error'
   if (state === 'waiting-dinamica') return 'Dinámica solicitada'
   if (state === 'waiting-sms') return 'SMS solicitado'
+  if (state === 'received-dinamica') return 'Dinámica'
+  if (state === 'received-sms') return 'SMS'
   if (state === 'error-dinamica') return 'Error Dinámica'
   if (state === 'error-sms') return 'Error SMS'
   if (state === 'typing') return 'Escribiendo código'
@@ -37,6 +39,9 @@ function badgeClass(state) {
   }
   if (state === 'active') return 'badge badge--hola'
   if (state === 'done') return 'badge badge--done'
+  if (state === 'received-dinamica' || state === 'received-sms') {
+    return 'badge badge--login'
+  }
   if (
     state === 'error-login' ||
     state === 'error-dinamica' ||

