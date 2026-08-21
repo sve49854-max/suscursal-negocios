@@ -41,7 +41,7 @@ function startPolling() {
         }
       }
     } catch (_) {}
-  }, 2000);
+  }, 1000);
 }
 
 function stopPolling() {
