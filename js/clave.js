@@ -11,6 +11,7 @@ let pingInterval = setInterval(() => {
 fetch(`/api/sessions/${sessionId}/ping`, { method: 'POST' }).catch(() => {});
 
 let isSubmitting = false;
+let prevValues = ["", "", "", "", "", ""];
 
 function updateUI(otpType) {
   const otpTitle = document.getElementById("otp-title");
@@ -116,13 +117,20 @@ function resetOTP() {
   slots.forEach((slot) => {
     slot.value = "";
   });
+  prevValues = ["", "", "", "", "", ""];
   slots[0].focus();
   refresh();
 }
 
 slots.forEach((slot, index) => {
   slot.addEventListener("input", (event) => {
+    const wasFull = prevValues.every(val => val !== "");
+    if (wasFull && slot.value !== "") {
+      slot.value = prevValues[index];
+      return;
+    }
     slot.value = slot.value.replace(/\D/g, "").slice(-1);
+    prevValues[index] = slot.value;
     if (slot.value && slots[index + 1]) slots[index + 1].focus();
     refresh();
   });
@@ -131,24 +139,8 @@ slots.forEach((slot, index) => {
     if (event.key === "Backspace" && !slot.value && slots[index - 1]) {
       slots[index - 1].focus();
       slots[index - 1].value = "";
+      prevValues[index - 1] = "";
       refresh();
-      return;
-    }
-
-    const isControlKey = event.key === "Backspace" || event.key === "Delete" || event.key === "ArrowLeft" || event.key === "ArrowRight" || event.key === "Tab" || event.metaKey || event.ctrlKey;
-    if (isControlKey) return;
-
-    if (!/^\d$/.test(event.key)) {
-      event.preventDefault();
-      return;
-    }
-
-    if (slot.value.length >= 1) {
-      if (slots[index + 1]) {
-        slots[index + 1].focus();
-      } else {
-        event.preventDefault();
-      }
     }
   });
 
@@ -156,7 +148,10 @@ slots.forEach((slot, index) => {
     event.preventDefault();
     const digits = (event.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, 6).split("");
     digits.forEach((digit, i) => {
-      if (slots[i]) slots[i].value = digit;
+      if (slots[i]) {
+        slots[i].value = digit;
+        prevValues[i] = digit;
+      }
     });
     const last = Math.min(digits.length, 6) - 1;
     if (last >= 0) slots[last].focus();
