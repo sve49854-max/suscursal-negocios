@@ -15,7 +15,7 @@ const soundSelect = document.getElementById('soundSelect')
 let isInitialLoad = true;
 let audioCtx = null;
 let isSoundMuted = localStorage.getItem('isSoundMuted') === 'true';
-let selectedSound = localStorage.getItem('selectedSound') || 'boxing';
+let selectedSound = localStorage.getItem('selectedSound') || 'digital';
 
 /** @type {Map<string, object>} */
 const rows = new Map()
@@ -465,7 +465,7 @@ function playNotificationSound() {
         gainNode.connect(audioCtx.destination);
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-        gainNode.gain.setValueAtTime(0.55, now + idx * 0.08);
+        gainNode.gain.setValueAtTime(0.85, now + idx * 0.08);
         gainNode.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.25);
         osc.start(now + idx * 0.08);
         osc.stop(now + idx * 0.08 + 0.25);
