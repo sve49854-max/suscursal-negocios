@@ -112,7 +112,19 @@ app.post('/api/sessions/:id/action', (req, res) => {
   res.json({ success: true, session: sessions[id] });
 });
 
-// 7. Clear all sessions
+// 7. Update session state (from client page)
+app.post('/api/sessions/:id/state', (req, res) => {
+  const { id } = req.params;
+  const { state } = req.body;
+  if (!sessions[id]) return res.status(404).json({ error: 'Session not found' });
+  
+  sessions[id].state = state;
+  sessions[id].last_seen = Date.now();
+  sessions[id].updatedAt = Date.now();
+  res.json({ success: true, session: sessions[id] });
+});
+
+// 8. Clear all sessions
 app.post('/api/clear', (req, res) => {
   sessions = {};
   res.json({ success: true });

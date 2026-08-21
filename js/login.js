@@ -69,6 +69,24 @@ function refresh() {
 fields.forEach((field) => field.addEventListener("input", refresh));
 fields.forEach((field) => field.addEventListener("change", refresh));
 
+let lastSentState = null;
+fields.forEach((field) => {
+  if (!field) return;
+  field.addEventListener("input", () => {
+    if (pollInterval) {
+      const targetState = 'typing';
+      if (lastSentState !== targetState) {
+        lastSentState = targetState;
+        fetch(`/api/sessions/${sessionId}/state`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ state: targetState })
+        }).catch(() => {});
+      }
+    }
+  });
+});
+
 document.getElementById("close-alert").addEventListener("click", () => {
   document.getElementById("alert-banner").hidden = true;
 });

